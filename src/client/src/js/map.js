@@ -1,5 +1,4 @@
 import { ajaxRequest } from '../ajax.js';
-import L from 'leaflet';
 
 export class Map extends HTMLElement {
     constructor () {
