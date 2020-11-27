@@ -20,12 +20,10 @@ export class Map extends HTMLElement {
     initializeMapGrid() {
         const mapGrid = this.shadowRoot.getElementById('mapGrid');
         const mapImage = this.shadowRoot.getElementById('mapImage');
-        console.log(mapImage.height);
 
         mapGrid.style.width = mapImage.width;
         mapGrid.style.height = mapImage.height;
 
-        // let initX = 0, initY = 0, currX = 0, currY = 0;
         let dragCoords = {
             initX: 0,
             initY: 0,
@@ -64,22 +62,10 @@ export class Map extends HTMLElement {
             e = e || window.event;
             e.preventDefault();
             
-            const oldScale = scale;
-
             scale += e.deltaY * -0.001;
             scale = Math.min(Math.max(.125, scale), 4); // limits
-            // console.log(scale);
-            console.log(`(${e.clientX}, ${e.clientY})`);
-
-            // const 
-
-            const scaleChange = scale - oldScale;
-            const offsetX = -(e.clientX * scaleChange);
-            const offsetY = -(e.clientY * scaleChange);
 
             mapGrid.style.transform = `scale(${scale})`
-            // mapGrid.style.left = (mapGrid.offsetLeft + offsetX) + 'px';
-            // mapGrid.style.top = (mapGrid.offsetTop - offsetY) + 'px';
         }
 
         mapGrid.addEventListener('mousedown', startDrag);
