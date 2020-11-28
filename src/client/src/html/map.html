@@ -7,15 +7,29 @@
         align-items: center;
     }
 
-    #mapGrid {
+    .map-grid {
         position: absolute;
         background-color: lightslategray;
         cursor: move;
     }
+
+    .map-grid-wrapper {
+        position: relative;
+    }
+    
+    .map-image {
+        display: block;
+        /* This is because images are by default inline, which means
+         they're on the same line as text normally is, and text
+         requires a baseline of 4px for overflow letters like j, p, etc.
+         This baseline would give us 4 "extra" pixels below the image */
+    }
 </style>
 
 <div class="flex-container">
-    <div id="mapGrid">
-        <img id="mapImage" src="../img/french_coast.jpg" width="2000" height="2000">
+    <div class="map-grid">
+        <div class="map-grid-wrapper">
+            <img class="map-image" src="../img/french_coast.jpg" width="1500">
+        </div>
     </div>
 </div>

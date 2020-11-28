@@ -18,10 +18,21 @@ export class Map extends HTMLElement {
     }
 
     initializeMapGrid() {
-        const mapGrid = this.shadowRoot.getElementById('mapGrid');
+        const mapGrid = this.shadowRoot.querySelector('.map-grid');
 
         mapGrid.addEventListener('mousedown', this.initializeDrag);
         // mapGrid.addEventListener('wheel', this.zoom); // disabled
+
+        // Temporary map element insertion
+        const mapGridWrapper = this.shadowRoot.querySelector('.map-grid-wrapper');
+        const mapElement = document.createElement('ww2-map-element');
+        mapElement.style = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+        `
+        mapGridWrapper.appendChild(mapElement);
     }
 
     initializeDrag(e) {
@@ -32,6 +43,7 @@ export class Map extends HTMLElement {
         e.preventDefault();
         initX = e.clientX;
         initY = e.clientY;
+        // console.log(`${initX}, ${initY}`);
         
         const drag = (e) => {
             e = e || window.event;
