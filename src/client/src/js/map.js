@@ -19,38 +19,30 @@ export class Map extends HTMLElement {
 
     initializeMapGrid() {
         const mapGrid = this.shadowRoot.getElementById('mapGrid');
-        const mapImage = this.shadowRoot.getElementById('mapImage');
 
-        mapGrid.style.width = mapImage.width;
-        mapGrid.style.height = mapImage.height;
+        mapGrid.addEventListener('mousedown', this.initializeDrag);
+        // mapGrid.addEventListener('wheel', this.zoom); // disabled
+    }
 
-        let dragCoords = {
-            initX: 0,
-            initY: 0,
-            currX: 0,
-            currY: 0
-        }
-        let scale = 1;
+    initializeDrag(e) {
+        const mapGrid = this
+        let initX = 0, initY = 0, currX = 0, currY = 0;
 
-        const startDrag = (e) => {
-            e = e || window.event;
-            e.preventDefault();
-            dragCoords.initX = e.clientX;
-            dragCoords.initY = e.clientY;
-            document.onmouseup = stopDrag;
-            document.onmousemove = drag;
-        }
-
+        e = e || window.event;
+        e.preventDefault();
+        initX = e.clientX;
+        initY = e.clientY;
+        
         const drag = (e) => {
             e = e || window.event;
             e.preventDefault();
-            dragCoords.currX = dragCoords.initX - e.clientX;
-            dragCoords.currY = dragCoords.initY - e.clientY;
-            dragCoords.initX = e.clientX;
-            dragCoords.initY = e.clientY;
+            currX = initX - e.clientX;
+            currY = initY - e.clientY;
+            initX = e.clientX;
+            initY = e.clientY;
 
-            mapGrid.style.left = (mapGrid.offsetLeft - dragCoords.currX) + 'px';
-            mapGrid.style.top = (mapGrid.offsetTop - dragCoords.currY) + 'px';
+            mapGrid.style.left = (mapGrid.offsetLeft - currX) + 'px';
+            mapGrid.style.top = (mapGrid.offsetTop - currY) + 'px';
         }
 
         const stopDrag = (e) => {
@@ -58,18 +50,25 @@ export class Map extends HTMLElement {
             document.onmousemove = null;
         }
 
-        const zoom = (e) => {
-            e = e || window.event;
-            e.preventDefault();
-            
-            scale += e.deltaY * -0.001;
-            scale = Math.min(Math.max(.125, scale), 4); // limits
+        document.onmouseup = stopDrag;
+        document.onmousemove = drag;
+    }
 
-            mapGrid.style.transform = `scale(${scale})`
+    zoom(e) {
+        const mapGrid = this;
+        if (!mapGrid.getAttribute('scale')) {
+            mapGrid.setAttribute('scale', 1);
         }
+        let scale = parseFloat(mapGrid.getAttribute('scale'));
 
-        mapGrid.addEventListener('mousedown', startDrag);
-        mapGrid.addEventListener('wheel', zoom);
+        e = e || window.event;
+        e.preventDefault();
+        
+        scale += e.deltaY * -0.001;
+        scale = Math.min(Math.max(.125, scale), 4); // minimum and maximum level of zoom
+
+        mapGrid.style.transform = `scale(${scale})`;
+        mapGrid.setAttribute('scale', scale);
     }
 }
 
