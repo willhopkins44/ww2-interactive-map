@@ -13,6 +13,21 @@ export class MapToolbar extends HTMLElement {
     async getHtml() {
         const html = await ajaxRequest('../html/map-toolbar.html');
         this.shadowRoot.innerHTML = html;
+
+        this.initializeSelections();
+    }
+
+    initializeSelections() {
+        const regiment = document.createElement('ww2-map-element');
+        regiment.classList.add('regiment');
+        regiment.style = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+        `;
+
+        this.shadowRoot.appendChild(regiment);
     }
 }
 

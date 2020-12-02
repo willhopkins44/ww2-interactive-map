@@ -24,15 +24,16 @@ export class Map extends HTMLElement {
         // mapGrid.addEventListener('wheel', this.zoom); // disabled
 
         // Temporary map element insertion
-        const mapGridWrapper = this.shadowRoot.querySelector('.map-grid-wrapper');
-        const mapElement = document.createElement('ww2-map-element');
-        mapElement.style = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        `
-        mapGridWrapper.appendChild(mapElement);
+        // const mapGridWrapper = this.shadowRoot.querySelector('.map-grid-wrapper');
+        // const mapElement = document.createElement('ww2-map-element');
+        // mapElement.classList.add('regiment');
+        // mapElement.style = `
+        //     position: absolute;
+        //     top: 0;
+        //     left: 0;
+        //     z-index: 5;
+        // `;
+        // mapGridWrapper.appendChild(mapElement);
     }
 
     initializeDrag(e) {
