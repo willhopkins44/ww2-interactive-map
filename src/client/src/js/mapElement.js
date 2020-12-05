@@ -22,7 +22,6 @@ export class MapElement extends HTMLElement {
     }
 
     initializeDrag(e) {
-        const mapGrid = this
         let initX = 0, initY = 0, currX = 0, currY = 0;
 
         e = e || window.event;
@@ -39,17 +38,63 @@ export class MapElement extends HTMLElement {
             initX = e.clientX;
             initY = e.clientY;
 
-            mapGrid.style.left = (mapGrid.offsetLeft - currX) + 'px';
-            mapGrid.style.top = (mapGrid.offsetTop - currY) + 'px';
+            this.style.left = (this.offsetLeft - currX) + 'px';
+            this.style.top = (this.offsetTop - currY) + 'px';
         }
 
         const stopDrag = (e) => {
             document.onmouseup = null;
             document.onmousemove = null;
+
+            const toolbar = document.querySelector('ww2-map-toolbar');
+
+            if (this.getRootNode().host === toolbar) {
+                this.checkPos();
+            }
         }
 
         document.onmouseup = stopDrag;
         document.onmousemove = drag;
+    }
+
+    checkPos() {
+        const mapGrid = document.querySelector('ww2-map').shadowRoot.querySelector('.map-grid');
+
+        // let elementLeft = parseFloat(this.style.left.replace('px', ''));
+        // let elementTop = parseFloat(this.style.top.replace('px', ''));
+        let elementLeft = this.offsetLeft;
+        let elementTop = this.offsetTop;
+        // console.log(mapGrid.style);
+        // const mapGridLeft = parseFloat(mapGrid.style.left.replace('px', '')) || 0;
+        // const mapGridTop = parseFloat(mapGrid.style.top.replace('px', '')) || 0;
+        const mapGridLeft = mapGrid.offsetLeft;
+        const mapGridTop = mapGrid.offsetTop;
+
+        // console.log(`element left: ${elementLeft}, element top: ${elementTop}`);
+        // console.log(`mapGrid left: ${mapGridLeft}, mapGrid top: ${mapGridTop}`);
+        if (elementLeft >= mapGridLeft && elementTop >= mapGridTop) {
+            // TODO: ensure not still on toolbar (such as if map is under toolbar)
+            // Attach element to position in map grid
+            // console.log(elementLeft);
+            // console.log(mapGridLeft);
+            elementLeft -= mapGridLeft;
+            elementTop -= mapGridTop;
+            this.style.left = elementLeft + 'px';
+            // console.log(this.style.left);
+            this.style.top = elementTop + 'px';
+
+            this.appendToMap();
+        }
+    }
+
+    appendToMap() {
+        const mapGrid = document.querySelector('ww2-map').shadowRoot.querySelector('.map-grid');
+        const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
+        const toolbar = document.querySelector('ww2-map-toolbar');
+
+        console.log(toolbar);
+        toolbar.shadowRoot.removeChild(this);
+        mapGridWrapper.appendChild(this);
     }
     
 }
