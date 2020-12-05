@@ -60,29 +60,20 @@ export class MapElement extends HTMLElement {
     checkPos() {
         const mapGrid = document.querySelector('ww2-map').shadowRoot.querySelector('.map-grid');
 
-        // let elementLeft = parseFloat(this.style.left.replace('px', ''));
-        // let elementTop = parseFloat(this.style.top.replace('px', ''));
         let elementLeft = this.offsetLeft;
         let elementTop = this.offsetTop;
-        // console.log(mapGrid.style);
-        // const mapGridLeft = parseFloat(mapGrid.style.left.replace('px', '')) || 0;
-        // const mapGridTop = parseFloat(mapGrid.style.top.replace('px', '')) || 0;
         const mapGridLeft = mapGrid.offsetLeft;
         const mapGridTop = mapGrid.offsetTop;
-
-        // console.log(`element left: ${elementLeft}, element top: ${elementTop}`);
-        // console.log(`mapGrid left: ${mapGridLeft}, mapGrid top: ${mapGridTop}`);
+        
         if (elementLeft >= mapGridLeft && elementTop >= mapGridTop) {
             // TODO: ensure not still on toolbar (such as if map is under toolbar)
-            // Attach element to position in map grid
-            // console.log(elementLeft);
-            // console.log(mapGridLeft);
+            // Adjust element position to grid
             elementLeft -= mapGridLeft;
             elementTop -= mapGridTop;
             this.style.left = elementLeft + 'px';
-            // console.log(this.style.left);
             this.style.top = elementTop + 'px';
 
+            // Attach element to position in map grid
             this.appendToMap();
         }
     }
