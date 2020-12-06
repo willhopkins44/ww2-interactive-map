@@ -14,12 +14,12 @@ export class MapToolbar extends HTMLElement {
         const html = await ajaxRequest('../html/map-toolbar.html');
         this.shadowRoot.innerHTML = html;
 
-        this.initializeSelections();
+        this.initializeListings();
     }
 
-    initializeSelections() {
+    initializeListings() {
         const regiment = document.createElement('ww2-map-element');
-        regiment.classList.add('regiment');
+        regiment.classList.add('testing');
         regiment.style = `
             position: absolute;
             top: 0;
