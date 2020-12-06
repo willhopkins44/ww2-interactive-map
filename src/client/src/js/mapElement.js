@@ -11,7 +11,7 @@ export class MapElement extends HTMLElement {
     }
 
     async getHtml() {
-        const html = await ajaxRequest('../html/mapElement.html');
+        const html = await ajaxRequest('../html/map-element.html');
         this.shadowRoot.innerHTML = html;
 
         this.initialize();
@@ -83,7 +83,6 @@ export class MapElement extends HTMLElement {
         const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
         const toolbar = document.querySelector('ww2-map-toolbar');
 
-        console.log(toolbar);
         toolbar.shadowRoot.removeChild(this);
         mapGridWrapper.appendChild(this);
     }
