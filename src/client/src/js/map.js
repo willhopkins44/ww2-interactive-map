@@ -15,6 +15,30 @@ export class Map extends HTMLElement {
         this.shadowRoot.innerHTML = html;
 
         this.initializeMapGrid();
+        this.initializeMutationObserver();
+    }
+
+    initializeMutationObserver() {
+        const targetNode = this.shadowRoot.querySelector('.map-grid-wrapper');
+
+        const mutationCallback = (mutationsList, observer) => {
+            for (const mutation of mutationsList) {
+                if (mutation['addedNodes'].length == 1) {
+                    const element = mutation['addedNodes'][0];
+                    element.confirm();
+                    break;
+                }
+            }
+        };
+
+        const observer = new MutationObserver(mutationCallback);
+
+        observer.observe(targetNode, {
+            childList: true,
+            subtree: false
+        });
+
+        // observer.disconnect();
     }
 
     initializeMapGrid() {

@@ -4,10 +4,13 @@ export class MapElement extends HTMLElement {
     constructor () {
         super();
         this.attachShadow({mode: 'open'});
+        this.onMap = false;
     }
 
     async connectedCallback() {
-        await this.getHtml();
+        if (!this.onMap) {
+            await this.getHtml();
+        }
     }
 
     async getHtml() {
@@ -83,8 +86,15 @@ export class MapElement extends HTMLElement {
         const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
         const toolbar = document.querySelector('ww2-map-toolbar');
 
+        this.onMap = true;
         toolbar.shadowRoot.removeChild(this);
         mapGridWrapper.appendChild(this);
+    }
+
+    confirm() {
+        const confirmBox = document.createElement('div');
+        confirmBox.classList.add('confirm');
+        this.shadowRoot.appendChild(confirmBox);
     }
     
 }
