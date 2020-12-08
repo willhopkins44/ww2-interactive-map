@@ -4,24 +4,25 @@ export class MapElement extends HTMLElement {
     constructor () {
         super();
         this.attachShadow({mode: 'open'});
-        this.onMap = false;
+        this.initialized = false;
     }
 
     async connectedCallback() {
-        if (!this.onMap) {
+        if (!this.initialized) {
             await this.getHtml();
+            this.initialize();
         }
     }
 
     async getHtml() {
         const html = await ajaxRequest('../html/map-element.html');
         this.shadowRoot.innerHTML = html;
-
-        this.initialize();
     }
 
     initialize() {
         this.addEventListener('mousedown', this.initializeDrag);
+
+        this.initialized = true;
     }
 
     initializeDrag(e) {
@@ -86,7 +87,6 @@ export class MapElement extends HTMLElement {
         const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
         const toolbar = document.querySelector('ww2-map-toolbar');
 
-        this.onMap = true;
         toolbar.shadowRoot.removeChild(this);
         mapGridWrapper.appendChild(this);
     }
@@ -94,7 +94,20 @@ export class MapElement extends HTMLElement {
     confirm() {
         const confirmBox = document.createElement('div');
         confirmBox.classList.add('confirm');
-        this.shadowRoot.appendChild(confirmBox);
+
+        const elementStyles = window.getComputedStyle(this);
+        const elementWidth = parseFloat(elementStyles.getPropertyValue('width').replace('px', ''));
+        const elementHeight = parseFloat(elementStyles.getPropertyValue('height').replace('px', ''));
+
+        this.shadowRoot.appendChild(confirmBox); // append before getComputedStyle
+        
+        const confirmBoxStyles = window.getComputedStyle(confirmBox);
+        const confirmBoxWidth = parseFloat(confirmBoxStyles.getPropertyValue('width').replace('px', ''));
+        const confirmBoxHeight = parseFloat(confirmBoxStyles.getPropertyValue('height').replace('px', ''));
+
+        confirmBox.style.left = (elementWidth - confirmBoxWidth) + 'px';
+        confirmBox.style.top = (elementHeight - confirmBoxHeight) + 'px';
+        console.log(`${confirmBox.style.left}, ${confirmBox.style.top}`);
     }
     
 }
