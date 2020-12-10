@@ -19,13 +19,15 @@ export class MapToolbar extends HTMLElement {
 
     initializeListings() {
         const regiment = document.createElement('ww2-map-element');
-        regiment.classList.add('testing');
+        // regiment.classList.add('testing');
         regiment.classList.add('toolbar-element');
         regiment.style = `
             top: 0;
             left: 0;
         `;
         regiment.setAttribute('image', '../img/soldier.jpg');
+
+        regiment.addEventListener('mousedown', this.initializeListings.bind(this));
 
         this.shadowRoot.appendChild(regiment);
     }
