@@ -22,7 +22,6 @@ export class MapToolbar extends HTMLElement {
         regiment.classList.add('testing');
         regiment.classList.add('toolbar-element');
         regiment.style = `
-            position: absolute;
             top: 0;
             left: 0;
         `;

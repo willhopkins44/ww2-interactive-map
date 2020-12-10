@@ -2,7 +2,6 @@ import { ajaxRequest } from '../ajax.js';
 
 export class MapElement extends HTMLElement {
     constructor () {
-        console.log('constructing');
         super();
         this.attachShadow({mode: 'open'});
         this.initialized = false;
