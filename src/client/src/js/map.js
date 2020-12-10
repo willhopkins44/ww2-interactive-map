@@ -25,7 +25,7 @@ export class Map extends HTMLElement {
             for (const mutation of mutationsList) {
                 if (mutation['addedNodes'].length == 1) {
                     const element = mutation['addedNodes'][0];
-                    element.confirm();
+                    element.checkConfirmation();
                     break;
                 }
             }

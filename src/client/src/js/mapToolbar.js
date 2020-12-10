@@ -20,12 +20,13 @@ export class MapToolbar extends HTMLElement {
     initializeListings() {
         const regiment = document.createElement('ww2-map-element');
         regiment.classList.add('testing');
+        regiment.classList.add('toolbar-element');
         regiment.style = `
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 5;
         `;
+        regiment.setAttribute('image', '../img/soldier.jpg');
 
         this.shadowRoot.appendChild(regiment);
     }

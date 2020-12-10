@@ -5,13 +5,37 @@
         height: 50px;
         background-color: slateblue;
         cursor: grab;
-        z-index: 3;
     }
 
-    .confirm {
+    .confirmation {
         position: absolute;
-        width: 10px;
-        height: 10px;
-        background-color: aqua;
+        display: flex;
+        justify-content: space-evenly;
+
+        width: 40px;
+        height: 20px;
+        background-color: lightslategray;
+
+        cursor: default;
+    }
+    
+    .check {
+        color: lightgreen;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .cross {
+        color: red;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .image {
+        object-fit: cover;
+        max-width: 100%;
+        max-height: 200%;
     }
 </style>
+
+<img class="image">
