@@ -109,16 +109,15 @@ export class MapElement extends HTMLElement {
     checkConfirmation() {
         const confirmBox = document.createElement('div');
         confirmBox.classList.add('confirmation');
+        this.shadowRoot.appendChild(confirmBox); // append before getComputedStyle
+
+        const confirmBoxStyles = window.getComputedStyle(confirmBox);
+        const confirmBoxHeight = parseFloat(confirmBoxStyles.getPropertyValue('height').replace('px', ''));
 
         const elementStyles = window.getComputedStyle(this);
         const elementWidth = parseFloat(elementStyles.getPropertyValue('width').replace('px', ''));
         const elementHeight = parseFloat(elementStyles.getPropertyValue('height').replace('px', ''));
-
-        this.shadowRoot.appendChild(confirmBox); // append before getComputedStyle
         
-        const confirmBoxStyles = window.getComputedStyle(confirmBox);
-        const confirmBoxHeight = parseFloat(confirmBoxStyles.getPropertyValue('height').replace('px', ''));
-
         confirmBox.style.left = (elementWidth) + 'px';
         confirmBox.style.top = (elementHeight - confirmBoxHeight) + 'px';
 
