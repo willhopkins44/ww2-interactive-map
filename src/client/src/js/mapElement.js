@@ -14,23 +14,31 @@ export class MapElement extends HTMLElement {
         }
     }
 
+    static get observedAttributes() {
+        return ['image'];
+    };
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        this.initializeImage(newValue);
+    }
+
     async getHtml() {
         const html = await ajaxRequest('../html/map-element.html');
-        this.shadowRoot.innerHTML = html;
+        this.shadowRoot.innerHTML += html; // += because the image may have already been appended to the shadow root
 
         this.initialize();
     }
 
     initialize() {
         this.addEventListener('mousedown', this.initializeDrag);
-        this.initializeImage();
 
         this.initialized = true;
     }
 
-    initializeImage() {
-        const image = this.shadowRoot.querySelector('.image');
-        image.src = this.getAttribute('image');
+    initializeImage(url) {
+        const image = document.createElement('img');
+        image.classList.add('image');
+        image.setAttribute('src', url);
 
         this.shadowRoot.appendChild(image);
     }
