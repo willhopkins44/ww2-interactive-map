@@ -4,6 +4,7 @@ export class MapToolbar extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({mode: 'open'});
+        this.initialized = false;
     }
 
     async connectedCallback() {
@@ -14,37 +15,56 @@ export class MapToolbar extends HTMLElement {
         const html = await ajaxRequest('../html/map-toolbar.html');
         this.shadowRoot.innerHTML = html;
 
-        this.initializeRegiment();
+        this.initializeElements();
+        // this.initializeRegiment();
         // this.initializeTown();
     }
 
-    initializeRegiment() {
-        const regiment = document.createElement('ww2-map-element');
-        // regiment.classList.add('testing');
-        regiment.classList.add('toolbar-element');
-        regiment.style = `
-            top: 0;
-            left: 0;
+    unattachElement() {
+        // "this" refers to the map element
+        // position absolute removes an element from flexbox
+        this.style = `
+            position: absolute;
         `;
-        regiment.setAttribute('image', '../img/soldier.jpg');
-        regiment.addEventListener('mousedown', this.initializeRegiment.bind(this), {
-            once: true // Prevent execution every time element is moved around map (including confirmation check)
-        });
-
-        this.shadowRoot.appendChild(regiment);
     }
 
-    initializeTown() {
-        const town = document.createElement('ww2-map-element');
-        town.classList.add('toolbar-element');
-        town.style = `
-            top: 0;
-            left: 0;
-        `;
-        town.setAttribute('image', '../img/town.jpg');
-        town.addEventListener('mousedown', this.initializeTown.bind(this));
+    initializeElements() {
+        if (this.initialized) {
+            const oldElements = this.shadowRoot.querySelectorAll('ww2-map-element');
+            for (const oldElement of oldElements) {
+                if (parseFloat(oldElement.style.top.replace('px', '')) == 0) {
+                    // element has not been dragged
+                    oldElement.remove();
+                }
+            }
+        }
 
-        this.shadowRoot.appendChild(town);
+        const elements = {
+            regiment: '../img/soldier.jpg',
+            town: '../img/town.jpg'
+        }
+
+        for (const imageUrl of Object.values(elements)) {
+            const element = document.createElement('ww2-map-element');
+            element.classList.add('toolbar-element');
+            element.style = `
+                top: 0px;
+                left: 0px;
+            `;
+            element.setAttribute('image', imageUrl);
+            element.addEventListener('mousedown', this.unattachElement, {
+                once: true
+            });
+            element.addEventListener('mousedown', this.initializeElements.bind(this), {
+                once: true
+            });
+
+            this.shadowRoot.appendChild(element);
+        }
+
+        if (!this.initialized) {
+            this.initialized = true;
+        }
     }
 }
 
