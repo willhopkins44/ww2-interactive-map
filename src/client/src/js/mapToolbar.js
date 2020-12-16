@@ -16,8 +16,6 @@ export class MapToolbar extends HTMLElement {
         this.shadowRoot.innerHTML = html;
 
         this.initializeElements();
-        // this.initializeRegiment();
-        // this.initializeTown();
     }
 
     unattachElement() {
