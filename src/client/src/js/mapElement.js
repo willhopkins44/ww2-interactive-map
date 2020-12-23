@@ -19,7 +19,8 @@ export class MapElement extends HTMLElement {
     };
 
     attributeChangedCallback(name, oldValue, newValue) {
-        this.initializeImage(newValue);
+        // this.initializeImage(newValue);
+        this.imageUrl = newValue;
     }
 
     async getHtml() {
@@ -30,6 +31,7 @@ export class MapElement extends HTMLElement {
     }
 
     initialize() {
+        this.initializeImage(this.imageUrl);
         this.addEventListener('mousedown', this.initializeDrag);
 
         this.initialized = true;
@@ -111,7 +113,6 @@ export class MapElement extends HTMLElement {
 
         toolbar.shadowRoot.removeChild(this);
         mapGridWrapper.appendChild(this);
-        this.classList.remove('toolbar-element');
     }
 
     checkConfirmation() {

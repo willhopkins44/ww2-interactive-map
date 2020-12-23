@@ -21,8 +21,12 @@ export class MapToolbar extends HTMLElement {
     unattachElement() {
         // "this" refers to the map element
         // position absolute removes an element from flexbox
+        this.classList.remove('toolbar-element');
+        const dimensions = this.getBoundingClientRect();
         this.style = `
             position: absolute;
+            left: ${dimensions.x}px;
+            top: ${dimensions.y}px;
         `;
     }
 
@@ -30,7 +34,7 @@ export class MapToolbar extends HTMLElement {
         if (this.initialized) {
             const oldElements = this.shadowRoot.querySelectorAll('ww2-map-element');
             for (const oldElement of oldElements) {
-                if (parseFloat(oldElement.style.top.replace('px', '')) == 0) {
+                if (oldElement.classList.contains('toolbar-element')) {
                     // element has not been dragged
                     oldElement.remove();
                 }
