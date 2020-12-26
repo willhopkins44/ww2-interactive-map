@@ -32,7 +32,9 @@ export class MapElement extends HTMLElement {
 
     initialize() {
         this.initializeImage(this.imageUrl);
+        this.initializeInformation();
         this.addEventListener('mousedown', this.initializeDrag);
+        this.addEventListener('mouseover', this.displayInformation);
 
         this.initialized = true;
     }
@@ -43,6 +45,23 @@ export class MapElement extends HTMLElement {
         image.setAttribute('src', url);
 
         this.shadowRoot.appendChild(image);
+    }
+
+    initializeInformation() {
+        const informationBox = document.createElement('div');
+        informationBox.classList.add('information');
+        informationBox.classList.add('hidden');
+        this.shadowRoot.appendChild(informationBox);
+
+        const informationBoxStyles = window.getComputedStyle(informationBox);
+        const informationBoxHeight = parseFloat(informationBoxStyles.getPropertyValue('height').replace('px', ''));
+
+        const elementStyles = window.getComputedStyle(this);
+        const elementWidth = parseFloat(elementStyles.getPropertyValue('width').replace('px', ''));
+        const elementHeight = parseFloat(elementStyles.getPropertyValue('height').replace('px', ''));
+
+        informationBox.style.left = (elementWidth) + 'px';
+        informationBox.style.top = ((elementHeight - informationBoxHeight) / 2) + 'px';
     }
 
     initializeDrag(e) {
@@ -80,6 +99,22 @@ export class MapElement extends HTMLElement {
 
             document.onmouseup = stopDrag;
             document.onmousemove = drag;
+        }
+    }
+
+    displayInformation(e) {
+        const informationBox = this.shadowRoot.querySelector('.information');
+        if (this.positionLocked) {
+            const displayInformationBox = setTimeout(() => {
+                informationBox.classList.remove('hidden');
+            }, 600);
+
+            this.onmouseleave = () => {
+                if (!informationBox.classList.contains('hidden')) {
+                    informationBox.classList.add('hidden');
+                }
+                clearTimeout(displayInformationBox);
+            }
         }
     }
 
