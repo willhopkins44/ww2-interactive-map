@@ -53,15 +53,14 @@ export class MapElement extends HTMLElement {
         informationBox.classList.add('hidden');
         this.shadowRoot.appendChild(informationBox);
 
-        const informationBoxStyles = window.getComputedStyle(informationBox);
-        const informationBoxHeight = parseFloat(informationBoxStyles.getPropertyValue('height').replace('px', ''));
-
         const elementStyles = window.getComputedStyle(this);
-        const elementWidth = parseFloat(elementStyles.getPropertyValue('width').replace('px', ''));
-        const elementHeight = parseFloat(elementStyles.getPropertyValue('height').replace('px', ''));
+        const elementWidth = elementStyles.getPropertyValue('width');
 
-        informationBox.style.left = (elementWidth) + 'px';
-        informationBox.style.top = ((elementHeight - informationBoxHeight) / 2) + 'px';
+        const imageStyles = window.getComputedStyle(this.shadowRoot.querySelector('.image'));
+        const outlineWidth = imageStyles.getPropertyValue('outline-width');
+
+        informationBox.style.left = elementWidth;
+        informationBox.style.top = `-${outlineWidth}`;
     }
 
     initializeDrag(e) {
