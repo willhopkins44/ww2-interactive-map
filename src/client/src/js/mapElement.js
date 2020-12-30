@@ -32,9 +32,11 @@ export class MapElement extends HTMLElement {
 
     initialize() {
         this.initializeImage(this.imageUrl);
-        this.initializeInformation();
+        this.initializeInformationBox();
+        this.initializeContextMenu();
         this.addEventListener('mousedown', this.initializeDrag);
-        this.addEventListener('mouseover', this.displayInformation);
+        this.addEventListener('mouseover', this.displayInformationBox);
+        this.addEventListener('contextmenu', this.displayContextMenu);
 
         this.initialized = true;
     }
@@ -47,7 +49,7 @@ export class MapElement extends HTMLElement {
         this.shadowRoot.appendChild(image);
     }
 
-    initializeInformation() {
+    initializeInformationBox() {
         const informationBox = document.createElement('div');
         informationBox.classList.add('information');
         informationBox.classList.add('hidden');
@@ -61,6 +63,13 @@ export class MapElement extends HTMLElement {
 
         informationBox.style.left = elementWidth;
         informationBox.style.top = `-${outlineWidth}`;
+    }
+
+    initializeContextMenu() {
+        const contextMenu = document.createElement('div');
+        contextMenu.classList.add('context-menu');
+        contextMenu.classList.add('hidden');
+        this.shadowRoot.appendChild(contextMenu);
     }
 
     initializeDrag(e) {
@@ -101,7 +110,7 @@ export class MapElement extends HTMLElement {
         }
     }
 
-    displayInformation(e) {
+    displayInformationBox(e) {
         const informationBox = this.shadowRoot.querySelector('.information');
         if (this.positionLocked) {
             const displayInformationBox = setTimeout(() => {
@@ -114,6 +123,18 @@ export class MapElement extends HTMLElement {
                 }
                 clearTimeout(displayInformationBox);
             }
+        }
+    }
+
+    displayContextMenu(e) {
+        if (this.positionLocked) {
+            e.preventDefault(); // overrides standard context menu
+
+            const contextMenu = this.shadowRoot.querySelector('.context-menu');
+            const bounds = contextMenu.getBoundingClientRect();
+            contextMenu.style.left = `${e.clientX - bounds.left}px`;
+            contextMenu.style.top = `${e.clientY - bounds.top}px`;
+            contextMenu.classList.remove('hidden');
         }
     }
 
