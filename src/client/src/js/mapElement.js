@@ -36,7 +36,7 @@ export class MapElement extends HTMLElement {
         this.initializeContextMenu();
         this.addEventListener('mousedown', this.initializeDrag);
         this.addEventListener('mouseover', this.displayInformationBox);
-        this.addEventListener('contextmenu', this.displayContextMenu);
+        this.addEventListener('contextmenu', this.toggleContextMenu);
 
         this.initialized = true;
     }
@@ -126,15 +126,29 @@ export class MapElement extends HTMLElement {
         }
     }
 
-    displayContextMenu(e) {
+    toggleContextMenu(e) {
         if (this.positionLocked) {
             e.preventDefault(); // overrides standard context menu
 
             const contextMenu = this.shadowRoot.querySelector('.context-menu');
-            const bounds = contextMenu.getBoundingClientRect();
-            contextMenu.style.left = `${e.clientX - bounds.left}px`;
-            contextMenu.style.top = `${e.clientY - bounds.top}px`;
-            contextMenu.classList.remove('hidden');
+            contextMenu.classList.toggle('hidden');
+
+            if (!contextMenu.classList.contains('hidden')) {
+                const elementBounds = this.getBoundingClientRect();
+                contextMenu.style.left = `${e.clientX - elementBounds.left}px`;
+                contextMenu.style.top = `${e.clientY - elementBounds.top}px`;
+            } else {
+                contextMenu.style.left = null;
+                contextMenu.style.top = null;
+            }
+            
+            contextMenu.addEventListener('mouseleave', () => {
+                if (!contextMenu.classList.contains('hidden')) {
+                    contextMenu.classList.toggle('hidden');
+                    contextMenu.style.left = null;
+                    contextMenu.style.top = null;
+                }
+            })
         }
     }
 
