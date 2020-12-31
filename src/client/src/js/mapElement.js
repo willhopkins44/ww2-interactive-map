@@ -73,7 +73,7 @@ export class MapElement extends HTMLElement {
     }
 
     initializeDrag(e) {
-        if (!this.positionLocked) {
+        if (!this.positionLocked && e.button == 0) {
             let initX = 0, initY = 0, currX = 0, currY = 0;
 
             e = e || window.event;

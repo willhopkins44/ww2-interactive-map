@@ -49,34 +49,36 @@ export class Map extends HTMLElement {
     }
 
     initializeDrag(e) {
-        const mapGrid = this
-        let initX = 0, initY = 0, currX = 0, currY = 0;
+        if (e.button == 0) {
+            const mapGrid = this
+            let initX = 0, initY = 0, currX = 0, currY = 0;
 
-        e = e || window.event;
-        e.preventDefault();
-        initX = e.clientX;
-        initY = e.clientY;
-        // console.log(`${initX}, ${initY}`);
-        
-        const drag = (e) => {
             e = e || window.event;
             e.preventDefault();
-            currX = initX - e.clientX;
-            currY = initY - e.clientY;
             initX = e.clientX;
             initY = e.clientY;
+            // console.log(`${initX}, ${initY}`);
+            
+            const drag = (e) => {
+                e = e || window.event;
+                e.preventDefault();
+                currX = initX - e.clientX;
+                currY = initY - e.clientY;
+                initX = e.clientX;
+                initY = e.clientY;
 
-            mapGrid.style.left = (mapGrid.offsetLeft - currX) + 'px';
-            mapGrid.style.top = (mapGrid.offsetTop - currY) + 'px';
+                mapGrid.style.left = (mapGrid.offsetLeft - currX) + 'px';
+                mapGrid.style.top = (mapGrid.offsetTop - currY) + 'px';
+            }
+
+            const stopDrag = (e) => {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+
+            document.onmouseup = stopDrag;
+            document.onmousemove = drag;
         }
-
-        const stopDrag = (e) => {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-
-        document.onmouseup = stopDrag;
-        document.onmousemove = drag;
     }
 
     zoom(e) {
