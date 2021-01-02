@@ -70,6 +70,34 @@ export class MapElement extends HTMLElement {
         contextMenu.classList.add('context-menu');
         contextMenu.classList.add('hidden');
         this.shadowRoot.appendChild(contextMenu);
+
+        // Options
+
+        const move = document.createElement('div');
+        move.classList.add('context-option');
+        move.innerHTML = 'Move';
+        move.addEventListener('click', () => {
+            const informationBox = this.shadowRoot.querySelector('.information');
+            if (!informationBox.classList.contains('hidden')) {
+                informationBox.classList.add('hidden');
+            }
+
+            if (!contextMenu.classList.contains('hidden')) {
+                contextMenu.classList.add('hidden');
+            }
+
+            this.positionLocked = false;
+            this.checkConfirmation();
+        });
+        contextMenu.appendChild(move);
+
+        const remove = document.createElement('div');
+        remove.classList.add('context-option');
+        remove.innerHTML = 'Remove';
+        remove.addEventListener('click', () => {
+            this.remove();
+        });
+        contextMenu.appendChild(remove);
     }
 
     initializeDrag(e) {

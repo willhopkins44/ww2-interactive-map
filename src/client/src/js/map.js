@@ -57,7 +57,6 @@ export class Map extends HTMLElement {
             e.preventDefault();
             initX = e.clientX;
             initY = e.clientY;
-            // console.log(`${initX}, ${initY}`);
             
             const drag = (e) => {
                 e = e || window.event;

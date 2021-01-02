@@ -30,7 +30,7 @@
     .context-menu {
         position: absolute;
         width: 100px;
-        height: 100px;
+        /* height: 100px; */
         background-color: white;
 
         border-style: solid;
@@ -38,7 +38,19 @@
         border-width: 2px;
         cursor: default;
 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
         z-index: 5;
+    }
+
+    .context-option {
+        text-align: center;
+    }
+
+    .context-option:hover {
+        background-color: lightblue;
     }
 
     .confirmation {
