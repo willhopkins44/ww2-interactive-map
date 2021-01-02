@@ -32,7 +32,8 @@ export class MapToolbar extends HTMLElement {
 
     initializeElements() {
         if (this.initialized) {
-            const oldElements = this.shadowRoot.querySelectorAll('ww2-map-element');
+            const elementsContainer = this.shadowRoot.querySelector('.elements-container');
+            const oldElements = elementsContainer.querySelectorAll('ww2-map-element');
             for (const oldElement of oldElements) {
                 if (oldElement.classList.contains('toolbar-element')) {
                     // element has not been dragged
@@ -41,12 +42,12 @@ export class MapToolbar extends HTMLElement {
             }
         }
 
-        const elements = {
+        const elementImages = {
             regiment: '../img/soldier.jpg',
             town: '../img/town.jpg'
         }
 
-        for (const imageUrl of Object.values(elements)) {
+        for (const imageUrl of Object.values(elementImages)) {
             const element = document.createElement('ww2-map-element');
             element.classList.add('toolbar-element');
             element.style = `
@@ -61,7 +62,9 @@ export class MapToolbar extends HTMLElement {
                 once: true
             });
 
-            this.shadowRoot.appendChild(element);
+            // this.shadowRoot.appendChild(element);
+            const elementsContainer = this.shadowRoot.querySelector('.elements-container');
+            elementsContainer.appendChild(element);
         }
 
         if (!this.initialized) {

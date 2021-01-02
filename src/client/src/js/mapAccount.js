@@ -11,7 +11,7 @@ export class MapSignin extends HTMLElement {
     }
 
     async getHtml() {
-        const html = await ajaxRequest('../html/map-signin.html');
+        const html = await ajaxRequest('../html/map-account.html');
         this.shadowRoot.innerHTML = html;
     }
 }

@@ -206,9 +206,9 @@ export class MapElement extends HTMLElement {
     appendToMap() {
         const mapGrid = document.querySelector('ww2-map').shadowRoot.querySelector('.map-grid');
         const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
-        const toolbar = document.querySelector('ww2-map-toolbar');
+        const toolbarElementsContainer = document.querySelector('ww2-map-toolbar').shadowRoot.querySelector('.elements-container');
 
-        toolbar.shadowRoot.removeChild(this);
+        toolbarElementsContainer.removeChild(this);
         mapGridWrapper.appendChild(this);
     }
 
