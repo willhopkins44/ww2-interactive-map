@@ -1,7 +1,7 @@
 <style>
     :host {
         width: 200px;
-        background-color: orange;
+        /* background-color: orange; */
 
         font-weight: bold;
         font-size: larger;
@@ -12,14 +12,23 @@
         align-items: center;
     }
 
-    :host(:hover) {
-        background-color: rgb(255, 123, 0);
+    img:hover {
         cursor: pointer;
     }
+
+    .hidden {
+        visibility: hidden;
+    }
+
+    /* :host(:hover) {
+        background-color: rgb(255, 123, 0);
+        cursor: pointer;
+    } */
 </style>
 
 <html>
-    <div>
+    <!-- <div>
         Account
-    </div>
+    </div> -->
+    <img src="../img/sits_02.png">
 </html>
