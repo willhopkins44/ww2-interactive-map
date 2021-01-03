@@ -8,6 +8,7 @@ const port = 3000;
 
 app.use(session({
     secret: 'sweetwater',
+    // store: 'MemoryStore', CHANGE TO SOMETHING ELSE FOR PRODUCTION. Check express-session page
     resave: false,
     saveUninitialized: false
 }));
