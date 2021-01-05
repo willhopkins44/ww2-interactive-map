@@ -1,12 +1,14 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-require('./passportSetup.js');
+require('./src/server/src/init.js');
 
 const app = express();
 const port = 3000;
 
+
 // Middlewares
+
 
 app.use(session({
     secret: 'sweetwater',
@@ -24,26 +26,9 @@ app.use(express.static('src/client/src', {
     index: 'index.html'
 }));
 
-// MongoDB
 
-const MongoClient = require('mongodb').MongoClient;
-const mongoUser = process.env.mongodb_user;
-const mongoPassword = process.env.mongodb_password;
-const mongoDatabase = 'ww2-map-database';
+// Passport Steam routes
 
-const uri = `mongodb+srv://${mongoUser}:${mongoPassword}@${mongoDatabase}.sw7iz.mongodb.net/Authentication?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-
-
-app.listen(port, () => {
-    console.log('Initialized');
-    console.log(process.env);
-});
 
 app.get('/auth/steam', passport.authenticate('steam'),
     function(req, res) {});
@@ -57,4 +42,12 @@ app.get('/auth/steam/return', passport.authenticate('steam', { failureRedirect: 
 app.get('/session', (req, res) => {
     console.log(req.session);
     res.redirect('/');
+});
+
+
+// Startup listener
+
+
+app.listen(port, () => {
+    console.log('Initialized');
 });
