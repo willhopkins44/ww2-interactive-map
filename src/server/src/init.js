@@ -1,2 +1,2 @@
 require('./passportSetup.js');
-require('./mongo.js');
+require('./mongo/mongo.js');
