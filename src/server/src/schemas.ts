@@ -1,20 +1,22 @@
 const mongoose = require('mongoose');
 
-function Coordinate(x: Number, y: Number) {
-    this.x = x;
-    this.y = y;
-};
+const User = new mongoose.Schema({
+    id: String
+});
 
 const Battalion = new mongoose.Schema({
     name: String,
     strength: Number,
     organization: Number,
-    experience: Number
+    experience: Number,
+    command: [User]
 });
 
 const Regiment = new mongoose.Schema({
     name: String,
-    position: Coordinate,
+    pos_x: Number,
+    pos_y: Number,
     stance: String,
+    command: [User],
     Battalions: [Battalion]
 });

@@ -12,12 +12,14 @@ passport.use(new SteamStrategy({
         // });
         // User is for Mongoose
 
-        console.log(identifier, profile);
+        console.log(`Identifier: ${identifier}`);
+        console.log(`Profile: ${profile}`);
         return done(null, profile);
     }
 ));
 
 passport.serializeUser(function(user, done) {
+    console.log(`Serializing user: ${user}`);
     done(null, user.id);
 });
 
@@ -28,5 +30,6 @@ passport.serializeUser(function(user, done) {
 // });
 
 passport.deserializeUser(function(user, done) {
+    console.log(`Deserializing user: ${user}`);
     done(null, user);
 })
