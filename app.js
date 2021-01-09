@@ -44,6 +44,17 @@ app.get('/session', (req, res) => {
     res.redirect('/');
 });
 
+app.get('/req', (req, res) => {
+    console.log('/req');
+    console.log(req);
+});
+
+app.get('/logout', (req, res) => {
+    req.session = null;
+    req.logout();
+    res.redirect('/');
+})
+
 
 // Startup listener
 

@@ -1,6 +1,8 @@
 const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
 
+const { findOrCreate } = require('./queries/findOrCreate');
+
 passport.use(new SteamStrategy({
         returnURL: 'http://localhost:3000/auth/steam/return',
         realm: 'http://localhost:3000/',
@@ -13,13 +15,14 @@ passport.use(new SteamStrategy({
         // User is for Mongoose
 
         console.log(`Identifier: ${identifier}`);
-        console.log(`Profile: ${profile}`);
+        console.log(`Profile: ${JSON.stringify(profile)}`);
+        findOrCreate(profile.id);
         return done(null, profile);
     }
 ));
 
 passport.serializeUser(function(user, done) {
-    console.log(`Serializing user: ${user}`);
+    console.log(`Serializing user: ${JSON.stringify(user)}`);
     done(null, user.id);
 });
 
