@@ -1,28 +1,32 @@
 const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
 
-const { findOrCreate } = require('./queries/findOrCreate');
+// const { findOrCreate } = require('./queries/findOrCreate');
+const User = require('./mongoose/schemas/user');
 
 passport.use(new SteamStrategy({
         returnURL: 'http://localhost:3000/auth/steam/return',
         realm: 'http://localhost:3000/',
         apiKey: '82A624FF213EAB18611B7D3737106624'
     },
-    function(identifier, profile, done) {
+    async function(identifier, profile, done) {
         // User.findByOpenID({ openId: identifier }, function (err, user) {
         //     return done(err, user);
         // });
         // User is for Mongoose
 
-        console.log(`Identifier: ${identifier}`);
-        console.log(`Profile: ${JSON.stringify(profile)}`);
-        findOrCreate(profile.id);
+        // console.log(`Identifier: ${identifier}`);
+        // console.log(`Profile: ${JSON.stringify(profile)}`);
+        // findOrCreate(profile.id);
+        // console.log(`User: ${User}`);
+        const user = await User.findBySteamId(profile.id);
+        console.log(`User: ${user}`);
         return done(null, profile);
     }
 ));
 
 passport.serializeUser(function(user, done) {
-    console.log(`Serializing user: ${JSON.stringify(user)}`);
+    // console.log(`Serializing user: ${JSON.stringify(user)}`);
     done(null, user.id);
 });
 
@@ -33,6 +37,6 @@ passport.serializeUser(function(user, done) {
 // });
 
 passport.deserializeUser(function(user, done) {
-    console.log(`Deserializing user: ${user}`);
+    // console.log(`Deserializing user: ${user}`);
     done(null, user);
 })
