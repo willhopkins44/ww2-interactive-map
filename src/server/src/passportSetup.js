@@ -1,7 +1,5 @@
 const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
-
-// const { findOrCreate } = require('./queries/findOrCreate');
 const User = require('./mongoose/schemas/user');
 
 passport.use(new SteamStrategy({
@@ -10,33 +8,33 @@ passport.use(new SteamStrategy({
         apiKey: '82A624FF213EAB18611B7D3737106624'
     },
     async function(identifier, profile, done) {
-        // User.findByOpenID({ openId: identifier }, function (err, user) {
-        //     return done(err, user);
-        // });
-        // User is for Mongoose
-
-        // console.log(`Identifier: ${identifier}`);
-        // console.log(`Profile: ${JSON.stringify(profile)}`);
-        // findOrCreate(profile.id);
-        // console.log(`User: ${User}`);
         const user = await User.findBySteamId(profile.id);
-        console.log(`User: ${user}`);
-        return done(null, profile);
+        // console.log(`Profile: ${JSON.stringify(profile)}`);
+        // console.log(`Identifier: ${identifier}`);
+        // console.log(`User: ${user}`);
+        if (!user) {
+            // console.log('No user found');
+            const newUser = new User({
+                name: profile.displayName,
+                steamId: profile.id
+            });
+            newUser.save(function(err, newUser) {
+                if (err) return console.error(err);
+            });
+        }
+        return done(null, user);
     }
 ));
 
 passport.serializeUser(function(user, done) {
     // console.log(`Serializing user: ${JSON.stringify(user)}`);
-    done(null, user.id);
+    done(null, user.steamId);
 });
 
-// passport.deserializeUser(function(id, done) {
-//     User.findById(id, function(err, user) {
-//         done(err, user);
-//     });
-// });
-
-passport.deserializeUser(function(user, done) {
-    // console.log(`Deserializing user: ${user}`);
+passport.deserializeUser(async function(userId, done) {
+    const user = await User.findBySteamId(userId);
+    // const user = await User.findBySteamId('123');
+    // console.log(`Deserialized user: ${user}`);
+    if (!user) console.error('DeserializeUser failed: no user found');
     done(null, user);
 })

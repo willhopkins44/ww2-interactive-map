@@ -9,12 +9,16 @@ const port = 3000;
 
 // Middlewares
 
+app.use(express.static('src/client/src', {
+    index: 'index.html'
+}));
 
 app.use(session({
     secret: 'sweetwater',
     // store: 'MemoryStore', CHANGE TO SOMETHING ELSE FOR PRODUCTION. Check express-session page
     cookie: {
-        httpOnly: false
+        httpOnly: false,
+        secure: false
     },
     resave: false,
     saveUninitialized: false
@@ -22,9 +26,6 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static('src/client/src', {
-    index: 'index.html'
-}));
 
 
 // Passport Steam routes
@@ -39,6 +40,10 @@ app.get('/auth/steam/return', passport.authenticate('steam', { failureRedirect: 
         res.redirect('/');
     });
 
+app.get('/failed', (req, res) => {
+    res.send('Login failed');
+});
+
 app.get('/session', (req, res) => {
     console.log(req.session);
     res.redirect('/');
@@ -50,10 +55,13 @@ app.get('/req', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-    req.session = null;
     req.logout();
-    res.redirect('/');
-})
+    req.session.destroy((err) => {
+        if (err) console.error(err);
+        res.clearCookie('connect.sid', {path: '/'});
+        res.redirect('/');
+    });
+});
 
 
 // Startup listener
