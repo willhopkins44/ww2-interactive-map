@@ -9,6 +9,7 @@ const port = 3000;
 
 // Middlewares
 
+// Serve statics before session to avoid repeated Passport user deserialization
 app.use(express.static('src/client/src', {
     index: 'index.html'
 }));
@@ -61,6 +62,10 @@ app.get('/logout', (req, res) => {
         res.clearCookie('connect.sid', {path: '/'});
         res.redirect('/');
     });
+});
+
+app.get('/post', (req, res) => {
+    console.log(req);
 });
 
 

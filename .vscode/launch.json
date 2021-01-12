@@ -13,8 +13,9 @@
             ],
             "program": "${workspaceFolder}\\app.js",
             "env": {
-                "mongodb_user": "USER HERE",
-                "mongodb_password": "PASSWORD HERE"
+                "mongodb_user": "REPLACE_ME",
+                "mongodb_password": "REPLACE_ME",
+                "host": "localhost:3000"
             }
         }
     ]

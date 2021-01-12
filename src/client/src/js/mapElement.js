@@ -1,4 +1,4 @@
-import { ajaxRequest } from '../ajax.js';
+import { ajaxRequest, ajaxPost } from '../ajax.js';
 
 export class MapElement extends HTMLElement {
     constructor () {
@@ -238,6 +238,7 @@ export class MapElement extends HTMLElement {
         confirmBox.appendChild(cross);
 
         const confirm = () => {
+            const response = this.postElement();
             this.positionLocked = true;
             confirmBox.remove();
         }
