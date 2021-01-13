@@ -47,13 +47,14 @@ export class MapToolbar extends HTMLElement {
             town: '../img/town.jpg'
         }
 
-        for (const imageUrl of Object.values(elementImages)) {
+        for (const [type, imageUrl] of Object.entries(elementImages)) {
             const element = document.createElement('ww2-map-element');
             element.classList.add('toolbar-element');
             element.style = `
                 top: 0px;
                 left: 0px;
             `;
+            element.setAttribute('type', type);
             element.setAttribute('image', imageUrl);
             element.addEventListener('mousedown', this.unattachElement, {
                 once: true

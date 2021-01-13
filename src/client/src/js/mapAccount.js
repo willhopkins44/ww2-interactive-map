@@ -7,7 +7,6 @@ export class MapSignin extends HTMLElement {
     }
 
     async connectedCallback() {
-        console.log('connected callback');
         await this.getHtml();
     }
 

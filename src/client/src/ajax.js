@@ -15,7 +15,7 @@ export async function ajaxRequest(path) {
     })
 }
 
-export async function ajaxPost() {
+export async function ajaxPost(path, data) {
     let xhttp = new XMLHttpRequest();
 
     return new Promise ( (resolve, reject) => {
@@ -27,7 +27,8 @@ export async function ajaxPost() {
             }
         }
 
-        xhttp.open('POST', process.env.host + '/post')
-        xhttp.send();
+        xhttp.open('POST', path);
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+        xhttp.send(data);
     })
 }

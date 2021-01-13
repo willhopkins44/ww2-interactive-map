@@ -250,6 +250,29 @@ export class MapElement extends HTMLElement {
         check.addEventListener('click', confirm);
         cross.addEventListener('click', cancel);
     }
+
+    async getData() {
+        const posX = parseFloat(this.style.left.replace('px', ''));
+        const posY = parseFloat(this.style.top.replace('px', ''));
+        const type = this.getAttribute('type');
+
+        const elementData = {
+            pos_x: posX,
+            pos_y: posY,
+            type
+        }
+
+        return elementData;
+    }
+
+    async postElement() {
+        const elementData = await this.getData();
+
+        const path = window.location.origin + '/post';
+        const response = await ajaxPost(path, JSON.stringify(elementData));
+        // response should contain newly created unit's attributes
+        console.log('Post response:', response);
+    }
 }
 
 customElements.define('ww2-map-element', MapElement);
