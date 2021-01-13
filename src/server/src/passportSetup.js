@@ -1,6 +1,6 @@
 const passport = require('passport');
 const SteamStrategy = require('passport-steam').Strategy;
-const User = require('./mongoose/schemas/user');
+const { User } = require('./mongoose/schemas/user');
 
 passport.use(new SteamStrategy({
         returnURL: 'http://localhost:3000/auth/steam/return',

@@ -3,9 +3,9 @@ const session = require('express-session');
 const passport = require('passport');
 require('./src/server/src/init.js');
 
-const app = express();
-const port = 3000;
+const createRegiment = require('./src/server/src/queries/createRegiment');
 
+const app = express();
 
 // Middlewares
 
@@ -13,6 +13,8 @@ const port = 3000;
 app.use(express.static('src/client/src', {
     index: 'index.html'
 }));
+
+app.use(express.json());
 
 app.use(session({
     secret: 'sweetwater',
@@ -64,14 +66,23 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.get('/post', (req, res) => {
-    console.log(req);
+app.post('/post', async (req, res) => {
+    res.send('RETURN NEWLY CREATED UNIT\'S ATTRIBUTES');
+    if (req.body.type) {
+        if (req.body.type == 'regiment') {
+            if (req.session.passport) {
+                await createRegiment(req.body, req.session.passport.user);
+            }
+        }
+    }
+    // TODO: expand this into separate, modular Express router function
+    // and fix gross nested if statements
 });
 
 
 // Startup listener
 
 
-app.listen(port, () => {
+app.listen(process.env.port, process.env.host, () => {
     console.log('Initialized');
 });

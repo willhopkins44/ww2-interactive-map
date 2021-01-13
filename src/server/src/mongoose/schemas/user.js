@@ -10,4 +10,6 @@ userSchema.static('findBySteamId', function(id) {
     return this.findOne({ steamId: id });
 });
 
-module.exports = connection.model('User', userSchema, '_users');
+const User = connection.model('User', userSchema, '_users');
+
+module.exports = { userSchema, User };

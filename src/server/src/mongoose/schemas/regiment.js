@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
-const User = require('user');
-const Battalion = require('battalion');
+const { userSchema } = require('./user');
+const { battalionSchema } = require('./battalion');
+
+const connection = mongoose.connection.useDb('Map_Elements');
 
 const regimentSchema = new mongoose.Schema({
     name: String,
     pos_x: Number,
     pos_y: Number,
     stance: String,
-    command: [User],
-    Battalions: [Battalion]
+    command: userSchema,
+    // Battalions: [Battalion]
 });
 
-module.exports = { regimentSchema };
+const Regiment = connection.model('Regiment', regimentSchema, '_regiments');
+
+module.exports = { regimentSchema, Regiment };
