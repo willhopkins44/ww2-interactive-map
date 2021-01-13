@@ -1,4 +1,3 @@
 node_modules
 src/client/src/.webpack
 docs
-.vscode

@@ -15,7 +15,8 @@
             "env": {
                 "mongodb_user": "REPLACE_ME",
                 "mongodb_password": "REPLACE_ME",
-                "host": "localhost:3000"
+                "host": "localhost",
+                "port": "3000"
             }
         }
     ]
