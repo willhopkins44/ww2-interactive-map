@@ -16,6 +16,14 @@ export class Map extends HTMLElement {
 
         this.initializeMapGrid();
         this.initializeMutationObserver();
+        this.populateMap();
+    }
+
+    initializeMapGrid() {
+        const mapGrid = this.shadowRoot.querySelector('.map-grid');
+
+        mapGrid.addEventListener('mousedown', this.initializeDrag);
+        // mapGrid.addEventListener('wheel', this.zoom); // disabled
     }
 
     initializeMutationObserver() {
@@ -25,8 +33,10 @@ export class Map extends HTMLElement {
             for (const mutation of mutationsList) {
                 if (mutation['addedNodes'].length == 1) {
                     const element = mutation['addedNodes'][0];
-                    element.checkConfirmation();
-                    break;
+                    if (!element.hasAttribute('mapId')) {
+                        element.checkConfirmation();
+                        break;
+                    }
                 }
             }
         };
@@ -41,11 +51,26 @@ export class Map extends HTMLElement {
         // observer.disconnect();
     }
 
-    initializeMapGrid() {
+    async populateMap() {
+        const path = window.location.origin + '/getMapElements';
+        const elements = JSON.parse(await ajaxRequest(path));
+        // console.log(elements);
         const mapGrid = this.shadowRoot.querySelector('.map-grid');
+        const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
 
-        mapGrid.addEventListener('mousedown', this.initializeDrag);
-        // mapGrid.addEventListener('wheel', this.zoom); // disabled
+        for (const element of elements) {
+            console.log(element);
+            const newElement = document.createElement('ww2-map-element');
+            newElement.style = `
+                position: absolute;
+                left: ${element.pos_x}px;
+                top: ${element.pos_y}px;
+            `;
+            newElement.setAttribute('image', '../img/soldier.jpg');
+            newElement.setAttribute('mapId', element._id);
+            newElement.positionLocked = true;
+            mapGridWrapper.appendChild(newElement);
+        }
     }
 
     initializeDrag(e) {

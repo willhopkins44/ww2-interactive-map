@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { userSchema } = require('./user');
-const { battalionSchema } = require('./battalion');
 
 const connection = mongoose.connection.useDb('Map_Elements');
 
@@ -9,8 +7,8 @@ const regimentSchema = new mongoose.Schema({
     pos_x: Number,
     pos_y: Number,
     stance: String,
-    command: userSchema,
-    // Battalions: [Battalion]
+    command: Boolean, // STRING
+    // Battalions: [Battalion IDs]
 });
 
 const Regiment = connection.model('Regiment', regimentSchema, '_regiments');

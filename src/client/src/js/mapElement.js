@@ -268,7 +268,7 @@ export class MapElement extends HTMLElement {
     async postElement() {
         const elementData = await this.getData();
 
-        const path = window.location.origin + '/post';
+        const path = window.location.origin + '/postMapElement';
         const response = await ajaxPost(path, JSON.stringify(elementData));
         // response should contain newly created unit's attributes
         console.log('Post response:', response);
