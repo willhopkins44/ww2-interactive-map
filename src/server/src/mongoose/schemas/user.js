@@ -3,7 +3,8 @@ const connection = mongoose.connection.useDb('Authentication');
 
 const userSchema = new mongoose.Schema({
     name: String,
-    steamId: String
+    steamId: String,
+    admin: Boolean
 });
 
 userSchema.static('findBySteamId', function(id) {

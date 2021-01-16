@@ -8,7 +8,7 @@ passport.use(new SteamStrategy({
         apiKey: '82A624FF213EAB18611B7D3737106624'
     },
     async function(identifier, profile, done) {
-        const user = await User.findBySteamId(profile.id);
+        let user = await User.findBySteamId(profile.id);
         // console.log(`Profile: ${JSON.stringify(profile)}`);
         // console.log(`Identifier: ${identifier}`);
         // console.log(`User: ${user}`);
@@ -16,11 +16,13 @@ passport.use(new SteamStrategy({
             // console.log('No user found');
             const newUser = new User({
                 name: profile.displayName,
-                steamId: profile.id
+                steamId: profile.id,
+                admin: false
             });
             newUser.save(function(err, newUser) {
                 if (err) return console.error(err);
             });
+            user = newUser;
         }
         return done(null, user);
     }
