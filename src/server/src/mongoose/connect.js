@@ -9,6 +9,6 @@ mongoose.connect(`mongodb+srv://${mongoUser}:${mongoPassword}@ww2-map-database.s
         if (err) {
             console.error(err)
         } else {
-            console.log('Mongoose connection initiaized');
+            console.log('Mongoose connection initialized');
         }
     });
