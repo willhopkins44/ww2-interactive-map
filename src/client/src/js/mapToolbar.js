@@ -43,8 +43,8 @@ export class MapToolbar extends HTMLElement {
         }
 
         const elementImages = {
-            regiment: '../img/soldier.jpg',
-            town: '../img/town.jpg'
+            regiment: '../img/regiment.jpg',
+            location: '../img/location.jpg'
         }
 
         for (const [type, imageUrl] of Object.entries(elementImages)) {

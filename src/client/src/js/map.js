@@ -52,24 +52,24 @@ export class Map extends HTMLElement {
     }
 
     async populateMap() {
-        const path = window.location.origin + '/getMapElements';
+        const path = window.location.origin + '/get/mapElement?type=all';
         const elements = JSON.parse(await ajaxRequest(path));
-        // console.log(elements);
         const mapGrid = this.shadowRoot.querySelector('.map-grid');
         const mapGridWrapper = mapGrid.querySelector('.map-grid-wrapper');
 
-        for (const element of elements) {
-            console.log(element);
-            const newElement = document.createElement('ww2-map-element');
-            newElement.style = `
-                position: absolute;
-                left: ${element.pos_x}px;
-                top: ${element.pos_y}px;
-            `;
-            newElement.setAttribute('image', '../img/soldier.jpg');
-            newElement.setAttribute('mapId', element._id);
-            newElement.positionLocked = true;
-            mapGridWrapper.appendChild(newElement);
+        for (const type of Object.keys(elements)) {
+            for (const element of elements[type]) {
+                const newElement = document.createElement('ww2-map-element');
+                newElement.style = `
+                    position: absolute;
+                    left: ${element.pos_x}px;
+                    top: ${element.pos_y}px;
+                `;
+                newElement.setAttribute('image', `../img/${type}.jpg`);
+                newElement.setAttribute('mapId', element._id);
+                newElement.positionLocked = true;
+                mapGridWrapper.appendChild(newElement);
+            }
         }
     }
 

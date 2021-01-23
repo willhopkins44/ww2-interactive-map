@@ -255,6 +255,7 @@ export class MapElement extends HTMLElement {
         const posX = parseFloat(this.style.left.replace('px', ''));
         const posY = parseFloat(this.style.top.replace('px', ''));
         const type = this.getAttribute('type');
+        // const type = 'fkh';
 
         const elementData = {
             pos_x: posX,
@@ -268,7 +269,7 @@ export class MapElement extends HTMLElement {
     async postElement() {
         const elementData = await this.getData();
 
-        const path = window.location.origin + '/postMapElement';
+        const path = window.location.origin + '/post/mapElement';
         const response = await ajaxPost(path, JSON.stringify(elementData));
         // response should contain newly created unit's attributes
         console.log('Post response:', response);
