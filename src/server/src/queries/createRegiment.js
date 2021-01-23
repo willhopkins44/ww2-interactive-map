@@ -6,11 +6,13 @@ const createRegiment = async (data, userId) => {
         pos_x: data.pos_x,
         pos_y: data.pos_y,
         stance: 'Neutral',
-        command: userId
+        // command: userId
     });
     newRegiment.save(function(err, newRegiment) {
         if (err) console.error(err);
     });
+
+    return newRegiment;
 };
 
 module.exports = createRegiment;
