@@ -1,18 +1,18 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const checkAdmin = require('./src/server/src/authentication/checkAdmin.js');
-require('./src/server/src/init.js');
+const checkAdmin = require('./server/src/authentication/checkAdmin.js');
+require('./server/src/init.js');
 
-const createRegiment = require('./src/server/src/queries/createRegiment');
-const getMapElements = require('./src/server/src/queries/getMapElements');
+const createRegiment = require('./server/src/queries/createRegiment');
+const getMapElements = require('./server/src/queries/getMapElements');
 
 const app = express();
 
 // Middlewares
 
 // Serve statics before session to avoid repeated Passport user deserialization
-app.use(express.static('src/client/src', {
+app.use(express.static(__dirname + '/client/src', {
     index: 'index.html'
 }));
 
