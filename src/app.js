@@ -1,13 +1,16 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const checkAdmin = require('./server/src/authentication/checkAdmin.js');
+// const checkAdmin = require('./server/src/authentication/checkAdmin.js');
 require('./server/src/init.js');
 
-const createRegiment = require('./server/src/queries/createRegiment');
-const getMapElements = require('./server/src/queries/getMapElements');
+// const createRegiment = require('./server/src/queries/createRegiment');
+// const getMapElements = require('./server/src/queries/getMapElements');
 
 const app = express();
+
+const post = require('./server/src/routers/post');
+const get = require('./server/src/routers/get');
 
 // Middlewares
 
@@ -32,6 +35,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/post', post);
+app.use('/get', get);
 
 // Passport Steam routes
 
@@ -68,30 +73,30 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.post('/postMapElement', async (req, res) => {
-    if (req.body.type) {
-        if (req.body.type == 'regiment') {
-            if (req.session.passport) {
-                if (await checkAdmin(req.session.passport.user)) {
-                    const response = await createRegiment(req.body, req.session.passport.user);
-                    // figure out how to generate proper response before fixing regiment schema
-                    // res.status(response.status).send(JSON.stringify(response.element));
-                } else {
-                    res.status(403).send('Forbidden bub');
-                }
-            } else {
-                res.status(401).send('Unauthorized bub');
-            }
-        }
-    }
-    // TODO: expand this into separate, modular Express router function
-    // and fix gross nested if statements
-});
+// app.post('/postMapElement', async (req, res) => {
+//     if (req.body.type) {
+//         if (req.body.type == 'regiment') {
+//             if (req.session.passport) {
+//                 if (await checkAdmin(req.session.passport.user)) {
+//                     const response = await createRegiment(req.body, req.session.passport.user);
+//                     // figure out how to generate proper response before fixing regiment schema
+//                     // res.status(response.status).send(JSON.stringify(response.element));
+//                 } else {
+//                     res.status(403).send('Forbidden bub');
+//                 }
+//             } else {
+//                 res.status(401).send('Unauthorized bub');
+//             }
+//         }
+//     }
+//     // TODO: expand this into separate, modular Express router function
+//     // and fix gross nested if statements
+// });
 
-app.get('/getMapElements', async (req, res) => {
-    res.send(await getMapElements());
-    // update getMapElements to return ALL map elements, appropriately labeled (regiment, town, etc)
-});
+// app.get('/getMapElements', async (req, res) => {
+//     res.send(await getMapElements());
+//     // update getMapElements to return ALL map elements, appropriately labeled (regiment, town, etc)
+// });
 
 
 // Startup listener
