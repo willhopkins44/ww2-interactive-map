@@ -67,6 +67,7 @@ export class Map extends HTMLElement {
                 `;
                 newElement.setAttribute('image', `../img/${type}.jpg`);
                 newElement.setAttribute('mapId', element._id);
+                newElement.setAttribute('type', type);
                 newElement.positionLocked = true;
                 mapGridWrapper.appendChild(newElement);
             }
