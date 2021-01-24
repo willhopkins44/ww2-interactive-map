@@ -76,7 +76,7 @@ export class MapElement extends HTMLElement {
         const move = document.createElement('div');
         move.classList.add('context-option');
         move.innerHTML = 'Move';
-        move.addEventListener('click', () => {
+        move.addEventListener('click', async () => {
             const informationBox = this.shadowRoot.querySelector('.information');
             if (!informationBox.classList.contains('hidden')) {
                 informationBox.classList.add('hidden');
@@ -86,15 +86,17 @@ export class MapElement extends HTMLElement {
                 contextMenu.classList.add('hidden');
             }
 
+            const priorPos = await this.getData();
             this.positionLocked = false;
-            this.checkConfirmation();
+            this.checkConfirmation(priorPos);
         });
         contextMenu.appendChild(move);
 
         const remove = document.createElement('div');
         remove.classList.add('context-option');
         remove.innerHTML = 'Remove';
-        remove.addEventListener('click', () => {
+        remove.addEventListener('click', async () => {
+            const response = await this.deleteElement();
             this.remove();
         });
         contextMenu.appendChild(remove);
@@ -212,7 +214,7 @@ export class MapElement extends HTMLElement {
         mapGridWrapper.appendChild(this);
     }
 
-    checkConfirmation() {
+    checkConfirmation(priorPos) {
         const confirmBox = document.createElement('div');
         confirmBox.classList.add('confirmation');
         this.shadowRoot.appendChild(confirmBox); // append before getComputedStyle
@@ -237,14 +239,23 @@ export class MapElement extends HTMLElement {
         cross.innerHTML = '&#x2717;'; // x mark
         confirmBox.appendChild(cross);
 
-        const confirm = () => {
-            const response = this.postElement();
+        const confirm = async () => {
+            const response = await this.postElement();
             this.positionLocked = true;
             confirmBox.remove();
         }
 
         const cancel = () => {
-            this.remove();
+            if (priorPos) {
+                const confirmBox = this.shadowRoot.querySelector('.confirmation');
+                confirmBox.remove();
+
+                this.style.left = priorPos.pos_x + 'px';
+                this.style.top = priorPos.pos_y + 'px';
+                this.positionLocked = true;
+            } else {
+                this.remove();
+            }
         }
 
         check.addEventListener('click', confirm);
@@ -255,12 +266,13 @@ export class MapElement extends HTMLElement {
         const posX = parseFloat(this.style.left.replace('px', ''));
         const posY = parseFloat(this.style.top.replace('px', ''));
         const type = this.getAttribute('type');
-        // const type = 'fkh';
+        const id = this.getAttribute('mapId');
 
         const elementData = {
             pos_x: posX,
             pos_y: posY,
-            type
+            type,
+            id
         }
 
         return elementData;
@@ -269,10 +281,22 @@ export class MapElement extends HTMLElement {
     async postElement() {
         const elementData = await this.getData();
 
-        const path = window.location.origin + '/post/mapElement';
+        const path = window.location.origin + '/post/mapElement?method=create';
         const response = await ajaxPost(path, JSON.stringify(elementData));
         // response should contain newly created unit's attributes
         console.log('Post response:', response);
+        this.setAttribute('mapId', JSON.parse(response)._id);
+        return response;
+    }
+
+    async deleteElement() {
+        const elementData = await this.getData();
+        let response = null;
+        if (elementData.id) {
+            const path = window.location.origin + '/post/mapElement?method=delete';
+            response = await ajaxPost(path, JSON.stringify(elementData));
+        }
+        return response;
     }
 }
 
