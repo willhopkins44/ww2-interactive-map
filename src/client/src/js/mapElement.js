@@ -240,6 +240,7 @@ export class MapElement extends HTMLElement {
         confirmBox.appendChild(cross);
 
         const confirm = async () => {
+            await this.deleteElement();
             const response = await this.postElement();
             this.positionLocked = true;
             confirmBox.remove();
