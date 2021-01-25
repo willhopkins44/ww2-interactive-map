@@ -12,10 +12,15 @@ const checkAdmin = async (steamId) => {
 const isAuthorized = async (req, res) => {
     if (!(req.session && req.session.passport && await checkAdmin(req.session.passport.user))) {
         if (req.session && req.session.passport) {
-            res.status(403).send('Forbidden');
+            // res.status(403).send('Forbidden');
+            res.status(403);
+            res.write('Forbidden');
         } else {
-            res.status(401).send('Unauthorized');
+            // res.status(401).send('Unauthorized');
+            res.status(401);
+            res.write('Unauthorized');
         }
+        return false;
     } else {
         return true;
     }

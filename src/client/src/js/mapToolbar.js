@@ -15,7 +15,15 @@ export class MapToolbar extends HTMLElement {
         const html = await ajaxRequest('../html/map-toolbar.html');
         this.shadowRoot.innerHTML = html;
 
-        this.initializeElements();
+        try {
+            const path = window.location.origin + '/get/isAdmin';
+            const isAdmin = await ajaxRequest(path);
+            if (isAdmin) {
+                this.initializeElements();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     unattachElement() {

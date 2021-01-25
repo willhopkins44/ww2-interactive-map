@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// const checkAdmin = require('../authentication/checkAdmin');
 const isAuthorized = require('../authentication/isAuthorized');
 
 const createRegiment = require('../queries/createRegiment');
@@ -20,11 +19,14 @@ router.post('/mapElement', async (req, res) => {
                 await deletion(req, res);
                 break;
             case 'default':
-                res.status(400).send('Invalid mapElement query');
+                res.status(400)
+                res.write('Invalid mapElement query');
         }
     } else {
-        res.status(400).send('Invalid mapElement query');
+        res.status(400)
+        res.write('Invalid mapElement query');
     }
+    res.send();
 });
 
 const create = async (req, res) => {
@@ -39,14 +41,16 @@ const create = async (req, res) => {
                     createdElement = await createLocation(req.body);
                     break;
                 default:
-                    res.status(400).send('Invalid element type');
-                    // break;
+                    res.status(400)
+                    res.write('Invalid element type');
             }
-            res.status(200).send(createdElement);
+            res.status(200)
+            res.write(JSON.stringify(createdElement));
         } else {
-            res.status(500).send();
+            res.status(500);
         }
     }
+    res.send();
 }
 
 const deletion = async (req, res) => {
@@ -61,20 +65,16 @@ const deletion = async (req, res) => {
                     deleted = await deleteLocation(req.body.id);
                     break;
                 case 'default':
-                    // res.status(400).send('Invalid element type');
                     res.status(400);
                     res.write('Invalid element type');
             }
             if (deleted) {
-                // res.status(200).send();
                 res.status(200);
             } else {
-                // res.status(400).send('Invalid element id');
                 res.status(400);
                 res.write('Invalid element id');
             }
         } else {
-            // res.status(500).send();
             res.status(500);
         }
         res.send();
