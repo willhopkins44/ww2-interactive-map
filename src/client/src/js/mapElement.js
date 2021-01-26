@@ -70,6 +70,17 @@ export class MapElement extends HTMLElement {
         const imageStyles = window.getComputedStyle(this.shadowRoot.querySelector('.image'));
         const outlineWidth = imageStyles.getPropertyValue('outline-width');
 
+        const mockData = {
+            Name: 'Regiment',
+            Strength: 100
+        };
+
+        for (const data of Object.entries(mockData)) {
+            const dataDiv = document.createElement('div');
+            dataDiv.innerHTML = `${data[0]}:&nbsp${data[1]}`;
+            informationBox.appendChild(dataDiv);
+        }
+
         informationBox.style.left = elementWidth;
         informationBox.style.top = `-${outlineWidth}`;
     }
