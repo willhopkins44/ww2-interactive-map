@@ -30,13 +30,22 @@ export class MapElement extends HTMLElement {
         this.initialize();
     }
 
-    initialize() {
+    async initialize() {
         this.initializeImage(this.imageUrl);
         this.initializeInformationBox();
-        this.initializeContextMenu();
         this.addEventListener('mousedown', this.initializeDrag);
         this.addEventListener('mouseover', this.displayInformationBox);
         this.addEventListener('contextmenu', this.toggleContextMenu);
+
+        try {
+            const path = window.location.origin + '/get/isAdmin';
+            const isAdmin = await ajaxRequest(path);
+            if (isAdmin) {
+                this.initializeContextMenu();
+            }
+        } catch (error) {
+            console.error(error);
+        }
 
         this.initialized = true;
     }
