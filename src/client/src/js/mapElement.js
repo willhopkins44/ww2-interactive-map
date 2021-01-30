@@ -31,23 +31,18 @@ export class MapElement extends HTMLElement {
     }
 
     async initialize() {
+        const remoteData = (await this.getData()).remoteData;
+        if (remoteData && remoteData.command) {
+            this.command = remoteData.command;
+        }
+        this.initialized = true;
+
         this.initializeImage(this.imageUrl);
         this.initializeInformationBox();
+        await this.initializeContextMenu();
         this.addEventListener('mousedown', this.initializeDrag);
         this.addEventListener('mouseover', this.displayInformationBox);
         this.addEventListener('contextmenu', this.toggleContextMenu);
-
-        try {
-            const path = window.location.origin + '/get/isAdmin';
-            const isAdmin = await ajaxRequest(path);
-            if (isAdmin) {
-                this.initializeContextMenu();
-            }
-        } catch (error) {
-            console.error(error);
-        }
-
-        this.initialized = true;
     }
 
     initializeImage(url) {
@@ -85,41 +80,88 @@ export class MapElement extends HTMLElement {
         informationBox.style.top = `-${outlineWidth}`;
     }
 
-    initializeContextMenu() {
+    async initializeContextMenu() {
         const contextMenu = document.createElement('div');
         contextMenu.classList.add('context-menu');
         contextMenu.classList.add('hidden');
         this.shadowRoot.appendChild(contextMenu);
 
-        // Options
+        // Admin Options
 
-        const move = document.createElement('div');
-        move.classList.add('context-option');
-        move.innerHTML = 'Move';
-        move.addEventListener('click', async () => {
-            const informationBox = this.shadowRoot.querySelector('.information');
-            if (!informationBox.classList.contains('hidden')) {
-                informationBox.classList.add('hidden');
+        try {
+            const path = window.location.origin + '/get/isAdmin';
+            const isAdmin = await ajaxRequest(path);
+            if (isAdmin) {
+                // this.initializeContextMenu();
+                const move = document.createElement('div');
+                move.classList.add('context-option');
+                move.innerHTML = 'Move';
+                move.addEventListener('click', async () => {
+                    const informationBox = this.shadowRoot.querySelector('.information');
+                    if (!informationBox.classList.contains('hidden')) {
+                        informationBox.classList.add('hidden');
+                    }
+
+                    if (!contextMenu.classList.contains('hidden')) {
+                        contextMenu.classList.add('hidden');
+                    }
+
+                    const priorData = await this.getData();
+                    this.positionLocked = false;
+                    this.checkConfirmation(priorData);
+                });
+                contextMenu.appendChild(move);
+
+                const remove = document.createElement('div');
+                remove.classList.add('context-option');
+                remove.innerHTML = 'Remove';
+                remove.addEventListener('click', async () => {
+                    const response = await this.deleteElement();
+                    this.remove();
+                });
+                contextMenu.appendChild(remove);
+
+                const copyId = document.createElement('div');
+                copyId.classList.add('context-option');
+                copyId.innerHTML = 'Copy ID';
+                copyId.addEventListener('click', async () => {
+                    if (!contextMenu.classList.contains('hidden')) {
+                        contextMenu.classList.add('hidden');
+                    }
+
+                    const id = this.getAttribute('mapId');
+                    navigator.clipboard.writeText(id);
+                });
+                contextMenu.appendChild(copyId);
             }
+        } catch (error) {
+            console.error(error);
+        }
 
-            if (!contextMenu.classList.contains('hidden')) {
-                contextMenu.classList.add('hidden');
-            }
+        // Player options
+        const path = window.location.origin + '/get/steamId';
+        const playerId = await ajaxRequest(path);
 
-            const priorData = await this.getData();
-            this.positionLocked = false;
-            this.checkConfirmation(priorData);
-        });
-        contextMenu.appendChild(move);
+        if (this.command == playerId) {
+            const move = document.createElement('div');
+            move.classList.add('context-option');
+            move.innerHTML = 'Move';
+            move.addEventListener('click', async () => {
+                const informationBox = this.shadowRoot.querySelector('.information');
+                if (!informationBox.classList.contains('hidden')) {
+                    informationBox.classList.add('hidden');
+                }
 
-        const remove = document.createElement('div');
-        remove.classList.add('context-option');
-        remove.innerHTML = 'Remove';
-        remove.addEventListener('click', async () => {
-            const response = await this.deleteElement();
-            this.remove();
-        });
-        contextMenu.appendChild(remove);
+                if (!contextMenu.classList.contains('hidden')) {
+                    contextMenu.classList.add('hidden');
+                }
+
+                const priorData = await this.getData();
+                this.positionLocked = false;
+                this.checkConfirmation(priorData);
+            });
+            contextMenu.appendChild(move);
+        }
     }
 
     initializeDrag(e) {
@@ -181,7 +223,9 @@ export class MapElement extends HTMLElement {
             e.preventDefault(); // overrides standard context menu
 
             const contextMenu = this.shadowRoot.querySelector('.context-menu');
-            contextMenu.classList.toggle('hidden');
+            if (contextMenu.childElementCount > 0) { // if options exist
+                contextMenu.classList.toggle('hidden');
+            }
 
             if (!contextMenu.classList.contains('hidden')) {
                 const elementBounds = this.getBoundingClientRect();
@@ -301,7 +345,8 @@ export class MapElement extends HTMLElement {
             pos_x: posX,
             pos_y: posY,
             type,
-            id
+            id,
+            command: this.command
         };
 
         if (type && id) {
