@@ -106,9 +106,9 @@ export class MapElement extends HTMLElement {
                 contextMenu.classList.add('hidden');
             }
 
-            const priorPos = await this.getData();
+            const priorData = await this.getData();
             this.positionLocked = false;
-            this.checkConfirmation(priorPos);
+            this.checkConfirmation(priorData);
         });
         contextMenu.appendChild(move);
 
@@ -234,7 +234,7 @@ export class MapElement extends HTMLElement {
         mapGridWrapper.appendChild(this);
     }
 
-    checkConfirmation(priorPos) {
+    checkConfirmation(priorData) {
         const confirmBox = document.createElement('div');
         confirmBox.classList.add('confirmation');
         this.shadowRoot.appendChild(confirmBox); // append before getComputedStyle
@@ -260,19 +260,27 @@ export class MapElement extends HTMLElement {
         confirmBox.appendChild(cross);
 
         const confirm = async () => {
-            await this.deleteElement();
-            const response = await this.postElement();
+            if (priorData) {
+                let newData = await this.getData();
+                newData.dataToUpdate = {
+                    pos_x: newData.pos_x,
+                    pos_y: newData.pos_y
+                };
+                await this.updateElement(newData);
+            } else {
+                await this.postElement();
+            }
             this.positionLocked = true;
             confirmBox.remove();
         }
 
         const cancel = () => {
-            if (priorPos) {
+            if (priorData) {
                 const confirmBox = this.shadowRoot.querySelector('.confirmation');
                 confirmBox.remove();
 
-                this.style.left = priorPos.pos_x + 'px';
-                this.style.top = priorPos.pos_y + 'px';
+                this.style.left = priorData.pos_x + 'px';
+                this.style.top = priorData.pos_y + 'px';
                 this.positionLocked = true;
             } else {
                 this.remove();
@@ -294,6 +302,19 @@ export class MapElement extends HTMLElement {
             pos_y: posY,
             type,
             id
+        };
+
+        if (type && id) {
+            try {
+                const path = window.location.origin + `/get/mapElement?type=${type}&id=${id}`;
+                const remoteData = await ajaxRequest(path);
+                if (remoteData) {
+                    elementData.remoteData = JSON.parse(remoteData);
+                }
+                // console.log(elementData);
+            } catch (error) {
+                console.error(error);
+            }
         }
 
         return elementData;
@@ -308,6 +329,12 @@ export class MapElement extends HTMLElement {
         console.log('Post response:', response);
         this.setAttribute('mapId', JSON.parse(response)._id);
         return response;
+    }
+
+    async updateElement(data) {
+        const path = window.location.origin + '/post/mapElement?method=update';
+        const response = await ajaxPost(path, JSON.stringify(data));
+        console.log(response);
     }
 
     async deleteElement() {
