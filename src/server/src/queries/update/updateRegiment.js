@@ -1,26 +1,21 @@
 const mongoose = require('mongoose');
-const { Regiment } = require('../../mongoose/schemas/regiment');
 const getRegiment = require('../getRegiment');
 
+const checkRange = async (element, data) => {
+    const changeX = Math.abs(data.pos_x - data.dataToUpdate.pos_x);
+    const changeY = Math.abs(data.pos_y - data.dataToUpdate.pos_y);
+    if (changeX < element.range && changeY < element.range) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const updateRegiment = async (body) => {
-    // let element;
-    // if (mongoose.Types.ObjectId.isValid(body.id)) {
-    //     // element = Regiment.findOneAndUpdate({id: req.body.id}, )
-    //     console.log(body);
-    //     const filter = { id: body.id };
-    //     let update = {};
-    //     for (const data of Object.entries(body.dataToUpdate)) {
-    //         console.log(data);
-    //         update[data[0]] = data[1];
-    //     }
-    //     console.log(update);
-    //     element = Regiment.findOneAndUpdate(filter, update, { new: true });
-    // }
-    // return element;
     let element;
     if (mongoose.Types.ObjectId.isValid(body.id)) {
         element = await getRegiment(body.id);
-        if (element) {
+        if (element && await checkRange(element, body)) {
             for (const data of Object.entries(body.dataToUpdate)) {
                 element[data[0]] = data[1];
             }

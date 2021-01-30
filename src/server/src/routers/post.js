@@ -107,7 +107,6 @@ const update = async (req, res) => {
                 res.write(JSON.stringify(updatedElement));
             } else {
                 res.status(404);
-                res.write('Invalid element id');
             }
         } else {
             res.status(500);
