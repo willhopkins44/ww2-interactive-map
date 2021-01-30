@@ -164,26 +164,47 @@ export class MapElement extends HTMLElement {
         }
     }
 
-    initializeDrag(e) {
+    async initializeDrag(e) {
         if (!this.positionLocked && e.button == 0) {
-            let initX = 0, initY = 0, currX = 0, currY = 0;
+            const remoteData = (await this.getData()).remoteData;
+            let range;
+            if (remoteData) {
+                range = remoteData.range;
+            }
+
+            let initX = 0, initY = 0, currX = 0, currY = 0, maxX = Number.POSITIVE_INFINITY, maxY = Number.POSITIVE_INFINITY;
 
             e = e || window.event;
             e.preventDefault();
             e.stopPropagation(); // prevents drag from traversing up DOM and affecting map grid
             initX = e.clientX;
             initY = e.clientY;
+
+            if (range) {
+                maxX = initX + range;
+                maxY = initY + range;
+            }
             
             const drag = (e) => {
                 e = e || window.event;
                 e.preventDefault();
-                currX = initX - e.clientX;
-                currY = initY - e.clientY;
-                initX = e.clientX;
-                initY = e.clientY;
+                if (currX < maxX) {
+                    currX = initX - e.clientX;
+                    initX = e.clientX;
+                    this.style.left = (this.offsetLeft - currX) + 'px';
+                }
+                if (currY < maxY) {
+                    currY = initY - e.clientY;
+                    initY = e.clientY;
+                    this.style.top = (this.offsetTop - currY) + 'px';
+                }
+                // currX = initX - e.clientX;
+                // currY = initY - e.clientY;
+                // initX = e.clientX;
+                // initY = e.clientY;
 
-                this.style.left = (this.offsetLeft - currX) + 'px';
-                this.style.top = (this.offsetTop - currY) + 'px';
+                // this.style.left = (this.offsetLeft - currX) + 'px';
+                // this.style.top = (this.offsetTop - currY) + 'px';
             }
 
             const stopDrag = (e) => {
@@ -371,7 +392,7 @@ export class MapElement extends HTMLElement {
         const path = window.location.origin + '/post/mapElement?method=create';
         const response = await ajaxPost(path, JSON.stringify(elementData));
         // response should contain newly created unit's attributes
-        console.log('Post response:', response);
+        // console.log('Post response:', response);
         this.setAttribute('mapId', JSON.parse(response)._id);
         return response;
     }
