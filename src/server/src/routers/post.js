@@ -9,6 +9,9 @@ const createLocation = require('../queries/createLocation');
 const deleteRegiment = require('../queries/deleteRegiment');
 const deleteLocation = require('../queries/deleteLocation');
 
+const updateRegiment = require('../queries/update/updateRegiment');
+const updateLocation = require('../queries/update/updateLocation');
+
 router.post('/mapElement', async (req, res) => {
     if (req.query.method) {
         switch (req.query.method) {
@@ -17,6 +20,9 @@ router.post('/mapElement', async (req, res) => {
                 break;
             case 'delete':
                 await deletion(req, res);
+                break;
+            case 'update':
+                await update(req, res);
                 break;
             case 'default':
                 res.status(400)
@@ -72,6 +78,35 @@ const deletion = async (req, res) => {
                 res.status(200);
             } else {
                 res.status(400);
+                res.write('Invalid element id');
+            }
+        } else {
+            res.status(500);
+        }
+        res.send();
+    }
+}
+
+const update = async (req, res) => {
+    if (await isAuthorized(req, res)) {
+        if (req.body && req.body.type && req.body.id) {
+            let updatedElement;
+            switch (req.body.type) {
+                case 'regiment':
+                    updatedElement = await updateRegiment(req.body);
+                    break;
+                case 'location':
+                    updatedElement = await updateLocation(req.body);
+                    break;
+                case 'default':
+                    res.status(404);
+                    res.write('Invalid element type');
+            }
+            if (updatedElement) {
+                res.status(200);
+                res.write(JSON.stringify(updatedElement));
+            } else {
+                res.status(404);
                 res.write('Invalid element id');
             }
         } else {
