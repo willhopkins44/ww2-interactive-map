@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const getAllElements = require('../queries/getAllElements');
+const getRegiment = require('../queries/getRegiment');
+const getLocation = require('../queries/getLocation');
 const isAuthorized = require('../authentication/isAuthorized');
 
 router.get('/mapElement', async (req, res) => {
@@ -11,13 +13,25 @@ router.get('/mapElement', async (req, res) => {
             case 'all':
                 response = await getAllElements();
                 break;
+            case 'regiment':
+                response = await getRegiment(req.query.id);
+                break;
+            case 'location':
+                response = await getLocation(req.query.id);
+                break;
             default:
                 res.status(404).send('Invalid element type');
                 break;
         }
-        res.status(200).json(response);
+        if (response) {
+            res.status(200);
+            res.write(JSON.stringify(response));
+        } else {
+            res.status(404);
+            res.write('Element ID not found');
+        }
     }
-    res.status(500).send();
+    res.send();
 });
 
 router.get('/isAdmin', async (req, res) => {
