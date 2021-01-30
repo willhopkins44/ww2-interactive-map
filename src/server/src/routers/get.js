@@ -42,4 +42,15 @@ router.get('/isAdmin', async (req, res) => {
     res.send();
 });
 
+router.get('/steamId', async (req, res) => {
+    if (req.session && req.session.passport && req.session.passport.user) {
+        res.status(200);
+        res.write(req.session.passport.user);
+    } else {
+        res.status(401);
+        res.write('User not logged in');
+    }
+    res.send();
+})
+
 module.exports = router;
