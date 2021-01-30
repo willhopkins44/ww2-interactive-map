@@ -306,11 +306,11 @@ export class MapElement extends HTMLElement {
         const confirm = async () => {
             if (priorData) {
                 let newData = await this.getData();
-                newData.dataToUpdate = {
+                priorData.dataToUpdate = {
                     pos_x: newData.pos_x,
                     pos_y: newData.pos_y
                 };
-                await this.updateElement(newData);
+                await this.updateElement(priorData);
             } else {
                 await this.postElement();
             }
