@@ -6,6 +6,7 @@ const createRegiment = async (data, userId) => {
         pos_x: data.pos_x,
         pos_y: data.pos_y,
         stance: 'Neutral',
+        range: 50
         // command: userId
     });
     newRegiment.save(function(err, newRegiment) {

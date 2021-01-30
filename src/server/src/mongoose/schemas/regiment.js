@@ -7,7 +7,8 @@ const regimentSchema = new mongoose.Schema({
     pos_x: Number,
     pos_y: Number,
     stance: String,
-    command: Boolean, // STRING
+    command: Number,
+    range: Number // in pixels
     // Battalions: [Battalion IDs]
 });
 
