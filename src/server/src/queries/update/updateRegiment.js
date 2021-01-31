@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const getRegiment = require('../getRegiment');
+const getRegiment = require('../get/getRegiment');
 
 const checkRange = async (element, data) => {
     if (!data.dataToUpdate.adminMove) {

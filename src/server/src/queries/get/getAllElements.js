@@ -1,5 +1,5 @@
-const { Regiment } = require('../mongoose/schemas/regiment');
-const { Location } = require('../mongoose/schemas/location');
+const { Regiment } = require('../../mongoose/schemas/regiment');
+const { Location } = require('../../mongoose/schemas/location');
 
 const getAllElements = async () => {
     let elements = {};

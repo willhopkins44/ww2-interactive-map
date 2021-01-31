@@ -1,4 +1,4 @@
-const { Location } = require('../mongoose/schemas/location');
+const { Location } = require('../../mongoose/schemas/location');
 
 const createLocation = async (data, userId) => {
     const newLocation = new Location({

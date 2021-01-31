@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Location } = require('../mongoose/schemas/location');
+const { Location } = require('../../mongoose/schemas/location');
 
 const getLocation = async (id) => {
     let element;

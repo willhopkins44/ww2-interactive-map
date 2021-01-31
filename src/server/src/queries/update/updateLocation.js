@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const { Location } = require('../../mongoose/schemas/location');
-const getLocation = require('../getLocation');
+const getLocation = require('../get/getLocation');
 
 const updateLocation = async (body) => {
     let element;

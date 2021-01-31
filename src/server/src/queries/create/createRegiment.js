@@ -1,4 +1,4 @@
-const { Regiment } = require('../mongoose/schemas/regiment');
+const { Regiment } = require('../../mongoose/schemas/regiment');
 
 const createRegiment = async (data, userId) => {
     const newRegiment = new Regiment({

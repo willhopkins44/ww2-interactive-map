@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Regiment } = require('../mongoose/schemas/regiment');
+const { Regiment } = require('../../mongoose/schemas/regiment');
 
 const getRegiment = async (id) => {
     let element;

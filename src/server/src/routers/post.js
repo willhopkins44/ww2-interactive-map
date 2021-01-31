@@ -3,11 +3,11 @@ const router = express.Router();
 
 const isAuthorized = require('../authentication/isAuthorized');
 
-const createRegiment = require('../queries/createRegiment');
-const createLocation = require('../queries/createLocation');
+const createRegiment = require('../queries/create/createRegiment');
+const createLocation = require('../queries/create/createLocation');
 
-const deleteRegiment = require('../queries/deleteRegiment');
-const deleteLocation = require('../queries/deleteLocation');
+const deleteRegiment = require('../queries/delete/deleteRegiment');
+const deleteLocation = require('../queries/delete/deleteLocation');
 
 const updateRegiment = require('../queries/update/updateRegiment');
 const updateLocation = require('../queries/update/updateLocation');

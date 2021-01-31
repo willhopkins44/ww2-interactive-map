@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const getAllElements = require('../queries/getAllElements');
-const getRegiment = require('../queries/getRegiment');
-const getLocation = require('../queries/getLocation');
+const getAllElements = require('../queries/get/getAllElements');
+const getRegiment = require('../queries/get/getRegiment');
+const getLocation = require('../queries/get/getLocation');
 const isAuthorized = require('../authentication/isAuthorized');
 
 router.get('/mapElement', async (req, res) => {
