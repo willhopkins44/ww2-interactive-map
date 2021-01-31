@@ -73,30 +73,6 @@ export class MapElement extends HTMLElement {
         const imageStyles = window.getComputedStyle(this.shadowRoot.querySelector('.image'));
         const outlineWidth = imageStyles.getPropertyValue('outline-width');
 
-        const remoteData = (await this.getData()).remoteData;
-        const type = this.getAttribute('type');
-        // let data = {};
-        // let name, allegiance, stance, strength, organization, equipment, experience, range;
-        if (type == 'division') {
-            const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
-            for (let attribute of attributes) {
-                const dataDiv = document.createElement('div');
-                dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
-                informationBox.appendChild(dataDiv);
-            }
-        }
-
-        // const mockData = {
-        //     Name: 'Division',
-        //     Strength: 100
-        // };
-
-        // for (const data of Object.entries(mockData)) {
-        //     const dataDiv = document.createElement('div');
-        //     dataDiv.innerHTML = `${data[0]}:&nbsp${data[1]}`;
-        //     informationBox.appendChild(dataDiv);
-        // }
-
         informationBox.style.left = elementWidth;
         informationBox.style.top = `-${outlineWidth}`;
     }
@@ -247,10 +223,20 @@ export class MapElement extends HTMLElement {
         }
     }
 
-    displayInformationBox(e) {
+    async displayInformationBox(e) {
         const informationBox = this.shadowRoot.querySelector('.information');
         if (this.positionLocked) {
-            const displayInformationBox = setTimeout(() => {
+            const displayInformationBox = setTimeout(async () => {
+                const remoteData = (await this.getData()).remoteData;
+                const type = this.getAttribute('type');
+                if (type == 'division') {
+                    const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
+                    for (let attribute of attributes) {
+                        const dataDiv = document.createElement('div');
+                        dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
+                        informationBox.appendChild(dataDiv);
+                    }
+                }
                 informationBox.classList.remove('hidden');
             }, 600);
 
