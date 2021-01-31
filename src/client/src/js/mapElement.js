@@ -31,6 +31,14 @@ export class MapElement extends HTMLElement {
     }
 
     async initialize() {
+        const path = window.location.origin + '/get/isAdmin';
+        this.admin = false;
+        this.adminMove = false;
+        try {
+            this.admin = await ajaxRequest(path);
+        } catch (error) {
+            console.error(error);
+        }
         const remoteData = (await this.getData()).remoteData;
         if (remoteData && remoteData.command) {
             this.command = remoteData.command;
@@ -88,54 +96,48 @@ export class MapElement extends HTMLElement {
 
         // Admin Options
 
-        try {
-            const path = window.location.origin + '/get/isAdmin';
-            const isAdmin = await ajaxRequest(path);
-            if (isAdmin) {
-                // this.initializeContextMenu();
-                const move = document.createElement('div');
-                move.classList.add('context-option');
-                move.innerHTML = 'Move';
-                move.addEventListener('click', async () => {
-                    const informationBox = this.shadowRoot.querySelector('.information');
-                    if (!informationBox.classList.contains('hidden')) {
-                        informationBox.classList.add('hidden');
-                    }
+        if (this.admin) {
+            const move = document.createElement('div');
+            move.classList.add('context-option');
+            move.innerHTML = 'Admin Move';
+            move.addEventListener('click', async () => {
+                const informationBox = this.shadowRoot.querySelector('.information');
+                if (!informationBox.classList.contains('hidden')) {
+                    informationBox.classList.add('hidden');
+                }
 
-                    if (!contextMenu.classList.contains('hidden')) {
-                        contextMenu.classList.add('hidden');
-                    }
+                if (!contextMenu.classList.contains('hidden')) {
+                    contextMenu.classList.add('hidden');
+                }
 
-                    const priorData = await this.getData();
-                    this.positionLocked = false;
-                    this.checkConfirmation(priorData);
-                });
-                contextMenu.appendChild(move);
+                const priorData = await this.getData();
+                this.positionLocked = false;
+                this.adminMove = true;
+                this.checkConfirmation(priorData);
+            });
+            contextMenu.appendChild(move);
 
-                const remove = document.createElement('div');
-                remove.classList.add('context-option');
-                remove.innerHTML = 'Remove';
-                remove.addEventListener('click', async () => {
-                    const response = await this.deleteElement();
-                    this.remove();
-                });
-                contextMenu.appendChild(remove);
+            const remove = document.createElement('div');
+            remove.classList.add('context-option');
+            remove.innerHTML = 'Remove';
+            remove.addEventListener('click', async () => {
+                const response = await this.deleteElement();
+                this.remove();
+            });
+            contextMenu.appendChild(remove);
 
-                const copyId = document.createElement('div');
-                copyId.classList.add('context-option');
-                copyId.innerHTML = 'Copy ID';
-                copyId.addEventListener('click', async () => {
-                    if (!contextMenu.classList.contains('hidden')) {
-                        contextMenu.classList.add('hidden');
-                    }
+            const copyId = document.createElement('div');
+            copyId.classList.add('context-option');
+            copyId.innerHTML = 'Copy ID';
+            copyId.addEventListener('click', async () => {
+                if (!contextMenu.classList.contains('hidden')) {
+                    contextMenu.classList.add('hidden');
+                }
 
-                    const id = this.getAttribute('mapId');
-                    navigator.clipboard.writeText(id);
-                });
-                contextMenu.appendChild(copyId);
-            }
-        } catch (error) {
-            console.error(error);
+                const id = this.getAttribute('mapId');
+                navigator.clipboard.writeText(id);
+            });
+            contextMenu.appendChild(copyId);
         }
 
         // Player options
@@ -174,16 +176,19 @@ export class MapElement extends HTMLElement {
             let range;
             let startingX;
             let startingY;
-            if (remoteData) {
+            if (remoteData && !this.adminMove) {
                 range = remoteData.range;
                 startingX = remoteData.pos_x;
                 startingY = remoteData.pos_y;
             }
 
             let maxX = Number.POSITIVE_INFINITY, maxY = Number.POSITIVE_INFINITY;
+            let minX = Number.NEGATIVE_INFINITY, minY = Number.NEGATIVE_INFINITY;
             if (range) {
                 maxX = startingX + range;
                 maxY = startingY + range;
+                minX = startingX - range;
+                minY = startingY - range;
             }
 
             let initX = 0, initY = 0, currX = 0, currY = 0;
@@ -192,23 +197,25 @@ export class MapElement extends HTMLElement {
             initY = e.clientY;
             
             const drag = (e) => {
-                e = e || window.event;
-                e.preventDefault();
-                currX = initX - e.clientX;
-                currY = initY - e.clientY;
-                initX = e.clientX;
-                initY = e.clientY;
+                if (!this.positionLocked) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    currX = initX - e.clientX;
+                    currY = initY - e.clientY;
+                    initX = e.clientX;
+                    initY = e.clientY;
 
-                currX = this.offsetLeft - currX;
-                currY = this.offsetTop - currY;
-                if (currX < maxX) {
-                    this.style.left = currX + 'px';
+                    currX = this.offsetLeft - currX;
+                    currY = this.offsetTop - currY;
+                    if (currX < maxX && currX > minX) {
+                        this.style.left = currX + 'px';
+                    }
+                    if (currY < maxY && currY > minY) {
+                        this.style.top = currY + 'px';
+                    }
+                    // this.style.left = (this.offsetLeft - currX) + 'px';
+                    // this.style.top = (this.offsetTop - currY) + 'px';
                 }
-                if (currY < maxY) {
-                    this.style.top = currY + 'px';
-                }
-                // this.style.left = (this.offsetLeft - currX) + 'px';
-                // this.style.top = (this.offsetTop - currY) + 'px';
             }
 
             const stopDrag = (e) => {
@@ -329,28 +336,32 @@ export class MapElement extends HTMLElement {
         confirmBox.appendChild(cross);
 
         const confirm = async () => {
+            this.positionLocked = true;
             if (priorData) {
                 let newData = await this.getData();
                 priorData.dataToUpdate = {
                     pos_x: newData.pos_x,
-                    pos_y: newData.pos_y
+                    pos_y: newData.pos_y,
+                    adminMove: this.adminMove
                 };
                 await this.updateElement(priorData);
             } else {
                 await this.postElement();
             }
-            this.positionLocked = true;
+            if (this.adminMove) {
+                this.adminMove = false;
+            }
             confirmBox.remove();
         }
 
         const cancel = () => {
+            this.positionLocked = true;
             if (priorData) {
                 const confirmBox = this.shadowRoot.querySelector('.confirmation');
                 confirmBox.remove();
 
                 this.style.left = priorData.pos_x + 'px';
                 this.style.top = priorData.pos_y + 'px';
-                this.positionLocked = true;
             } else {
                 this.remove();
             }
@@ -404,7 +415,6 @@ export class MapElement extends HTMLElement {
     async updateElement(data) {
         const path = window.location.origin + '/post/mapElement?method=update';
         const response = await ajaxPost(path, JSON.stringify(data));
-        console.log(response);
     }
 
     async deleteElement() {
