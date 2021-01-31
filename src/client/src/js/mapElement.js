@@ -61,7 +61,7 @@ export class MapElement extends HTMLElement {
         this.shadowRoot.appendChild(image);
     }
 
-    initializeInformationBox() {
+    async initializeInformationBox() {
         const informationBox = document.createElement('div');
         informationBox.classList.add('information');
         informationBox.classList.add('hidden');
@@ -73,16 +73,29 @@ export class MapElement extends HTMLElement {
         const imageStyles = window.getComputedStyle(this.shadowRoot.querySelector('.image'));
         const outlineWidth = imageStyles.getPropertyValue('outline-width');
 
-        const mockData = {
-            Name: 'Division',
-            Strength: 100
-        };
-
-        for (const data of Object.entries(mockData)) {
-            const dataDiv = document.createElement('div');
-            dataDiv.innerHTML = `${data[0]}:&nbsp${data[1]}`;
-            informationBox.appendChild(dataDiv);
+        const remoteData = (await this.getData()).remoteData;
+        const type = this.getAttribute('type');
+        // let data = {};
+        // let name, allegiance, stance, strength, organization, equipment, experience, range;
+        if (type == 'division') {
+            const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
+            for (let attribute of attributes) {
+                const dataDiv = document.createElement('div');
+                dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
+                informationBox.appendChild(dataDiv);
+            }
         }
+
+        // const mockData = {
+        //     Name: 'Division',
+        //     Strength: 100
+        // };
+
+        // for (const data of Object.entries(mockData)) {
+        //     const dataDiv = document.createElement('div');
+        //     dataDiv.innerHTML = `${data[0]}:&nbsp${data[1]}`;
+        //     informationBox.appendChild(dataDiv);
+        // }
 
         informationBox.style.left = elementWidth;
         informationBox.style.top = `-${outlineWidth}`;
