@@ -166,43 +166,47 @@ export class MapElement extends HTMLElement {
 
     async initializeDrag(e) {
         if (!this.positionLocked && e.button == 0) {
-            const remoteData = (await this.getData()).remoteData;
-            let range;
-            if (remoteData) {
-                range = remoteData.range;
-            }
-
-            let initX = 0, initY = 0, currX = 0, currY = 0, maxX = Number.POSITIVE_INFINITY, maxY = Number.POSITIVE_INFINITY;
-
             e = e || window.event;
             e.preventDefault();
             e.stopPropagation(); // prevents drag from traversing up DOM and affecting map grid
+            
+            const remoteData = (await this.getData()).remoteData;
+            let range;
+            let startingX;
+            let startingY;
+            if (remoteData) {
+                range = remoteData.range;
+                startingX = remoteData.pos_x;
+                startingY = remoteData.pos_y;
+            }
+
+            let maxX = Number.POSITIVE_INFINITY, maxY = Number.POSITIVE_INFINITY;
+            if (range) {
+                maxX = startingX + range;
+                maxY = startingY + range;
+            }
+
+            let initX = 0, initY = 0, currX = 0, currY = 0;
+
             initX = e.clientX;
             initY = e.clientY;
-
-            if (range) {
-                maxX = initX + range;
-                maxY = initY + range;
-            }
             
             const drag = (e) => {
                 e = e || window.event;
                 e.preventDefault();
+                currX = initX - e.clientX;
+                currY = initY - e.clientY;
+                initX = e.clientX;
+                initY = e.clientY;
+
+                currX = this.offsetLeft - currX;
+                currY = this.offsetTop - currY;
                 if (currX < maxX) {
-                    currX = initX - e.clientX;
-                    initX = e.clientX;
-                    this.style.left = (this.offsetLeft - currX) + 'px';
+                    this.style.left = currX + 'px';
                 }
                 if (currY < maxY) {
-                    currY = initY - e.clientY;
-                    initY = e.clientY;
-                    this.style.top = (this.offsetTop - currY) + 'px';
+                    this.style.top = currY + 'px';
                 }
-                // currX = initX - e.clientX;
-                // currY = initY - e.clientY;
-                // initX = e.clientX;
-                // initY = e.clientY;
-
                 // this.style.left = (this.offsetLeft - currX) + 'px';
                 // this.style.top = (this.offsetTop - currY) + 'px';
             }
