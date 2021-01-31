@@ -225,7 +225,9 @@ export class MapElement extends HTMLElement {
 
     async displayInformationBox(e) {
         const informationBox = this.shadowRoot.querySelector('.information');
-        if (this.positionLocked) {
+        const path = window.location.origin + '/get/steamId';
+        const playerId = await ajaxRequest(path);
+        if ((this.positionLocked && this.command == playerId) || this.admin) {
             const displayInformationBox = setTimeout(async () => {
                 const remoteData = (await this.getData()).remoteData;
                 const type = this.getAttribute('type');
