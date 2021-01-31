@@ -374,14 +374,18 @@ export class MapElement extends HTMLElement {
     async getData() {
         const posX = parseFloat(this.style.left.replace('px', ''));
         const posY = parseFloat(this.style.top.replace('px', ''));
-        const type = this.getAttribute('type');
         const id = this.getAttribute('mapId');
+        const type = this.getAttribute('type');
+        const specialty = this.getAttribute('specialty');
+        const allegiance = this.getAttribute('allegiance');
 
         const elementData = {
             pos_x: posX,
             pos_y: posY,
-            type,
             id,
+            type,
+            specialty,
+            allegiance,
             command: this.command
         };
 

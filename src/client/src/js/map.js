@@ -65,7 +65,11 @@ export class Map extends HTMLElement {
                     left: ${element.pos_x}px;
                     top: ${element.pos_y}px;
                 `;
-                newElement.setAttribute('image', `../img/${type}.jpg`);
+                if (element.specialty && element.allegiance) {
+                    newElement.setAttribute('image', `../img/${type}_${element.specialty}_${element.allegiance}.svg`);
+                } else {
+                    newElement.setAttribute('image', `../img/${type}.jpg`);
+                }
                 newElement.setAttribute('mapId', element._id);
                 newElement.setAttribute('type', type);
                 newElement.positionLocked = true;

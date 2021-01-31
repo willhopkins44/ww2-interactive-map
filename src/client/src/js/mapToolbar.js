@@ -51,18 +51,25 @@ export class MapToolbar extends HTMLElement {
         }
 
         const elementImages = {
-            division: '../img/division.jpg',
+            // division: '../img/division.jpg',
+            division_infantry_GER: '../img/division_infantry_GER.svg',
             location: '../img/location.jpg'
         }
 
-        for (const [type, imageUrl] of Object.entries(elementImages)) {
+        for (let [key, imageUrl] of Object.entries(elementImages)) {
             const element = document.createElement('ww2-map-element');
             element.classList.add('toolbar-element');
             element.style = `
                 top: 0px;
                 left: 0px;
             `;
+            key = key.split('_');
+            const type = key[0];
+            const specialty = key[1];
+            const allegiance = key[2];
             element.setAttribute('type', type);
+            element.setAttribute('specialty', specialty);
+            element.setAttribute('allegiance', allegiance);
             element.setAttribute('image', imageUrl);
             element.addEventListener('mousedown', this.unattachElement, {
                 once: true
