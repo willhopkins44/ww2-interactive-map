@@ -51,7 +51,7 @@ export class MapToolbar extends HTMLElement {
         }
 
         const elementImages = {
-            regiment: '../img/regiment.jpg',
+            division: '../img/division.jpg',
             location: '../img/location.jpg'
         }
 

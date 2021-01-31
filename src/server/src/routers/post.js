@@ -3,13 +3,13 @@ const router = express.Router();
 
 const isAuthorized = require('../authentication/isAuthorized');
 
-const createRegiment = require('../queries/create/createRegiment');
+const createDivision = require('../queries/create/createDivision');
 const createLocation = require('../queries/create/createLocation');
 
-const deleteRegiment = require('../queries/delete/deleteRegiment');
+const deleteDivision = require('../queries/delete/deleteDivision');
 const deleteLocation = require('../queries/delete/deleteLocation');
 
-const updateRegiment = require('../queries/update/updateRegiment');
+const updateDivision = require('../queries/update/updateDivision');
 const updateLocation = require('../queries/update/updateLocation');
 
 router.post('/mapElement', async (req, res) => {
@@ -40,8 +40,8 @@ const create = async (req, res) => {
         if (req.body && req.body.type) {
             let createdElement;
             switch(req.body.type) {
-                case 'regiment':
-                    createdElement = await createRegiment(req.body);
+                case 'division':
+                    createdElement = await createDivision(req.body);
                     break;
                 case 'location':
                     createdElement = await createLocation(req.body);
@@ -64,8 +64,8 @@ const deletion = async (req, res) => {
         if (req.body && req.body.type && req.body.id) {
             let deleted;
             switch (req.body.type) {
-                case 'regiment':
-                    deleted = await deleteRegiment(req.body.id);
+                case 'division':
+                    deleted = await deleteDivision(req.body.id);
                     break;
                 case 'location':
                     deleted = await deleteLocation(req.body.id);
@@ -92,8 +92,8 @@ const update = async (req, res) => {
         if (req.body && req.body.type && req.body.id) {
             let updatedElement;
             switch (req.body.type) {
-                case 'regiment':
-                    updatedElement = await updateRegiment(req.body);
+                case 'division':
+                    updatedElement = await updateDivision(req.body);
                     break;
                 case 'location':
                     updatedElement = await updateLocation(req.body);

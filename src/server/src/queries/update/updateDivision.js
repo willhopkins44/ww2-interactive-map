@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const getRegiment = require('../get/getRegiment');
+const getdivision = require('../get/getDivision');
 
 const checkRange = async (element, data) => {
     if (!data.dataToUpdate.adminMove) {
@@ -15,10 +15,10 @@ const checkRange = async (element, data) => {
     }
 }
 
-const updateRegiment = async (body) => {
+const updatedivision = async (body) => {
     let element;
     if (mongoose.Types.ObjectId.isValid(body.id)) {
-        element = await getRegiment(body.id);
+        element = await getdivision(body.id);
         if (element && await checkRange(element, body)) {
             for (const data of Object.entries(body.dataToUpdate)) {
                 element[data[0]] = data[1];
@@ -29,4 +29,4 @@ const updateRegiment = async (body) => {
     return element;
 }
 
-module.exports = updateRegiment;
+module.exports = updatedivision;

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const getAllElements = require('../queries/get/getAllElements');
-const getRegiment = require('../queries/get/getRegiment');
+const getDivision = require('../queries/get/getDivision');
 const getLocation = require('../queries/get/getLocation');
 const isAuthorized = require('../authentication/isAuthorized');
 
@@ -13,8 +13,8 @@ router.get('/mapElement', async (req, res) => {
             case 'all':
                 response = await getAllElements();
                 break;
-            case 'regiment':
-                response = await getRegiment(req.query.id);
+            case 'division':
+                response = await getDivision(req.query.id);
                 break;
             case 'location':
                 response = await getLocation(req.query.id);

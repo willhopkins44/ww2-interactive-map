@@ -1,9 +1,9 @@
-const { Regiment } = require('../../mongoose/schemas/regiment');
+const { Division } = require('../../mongoose/schemas/division');
 const { Location } = require('../../mongoose/schemas/location');
 
 const getAllElements = async () => {
     let elements = {};
-    elements.regiment = await Regiment.find({});
+    elements.division = await Division.find({});
     elements.location = await Location.find({});
     return elements;
 }

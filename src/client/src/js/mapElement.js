@@ -74,7 +74,7 @@ export class MapElement extends HTMLElement {
         const outlineWidth = imageStyles.getPropertyValue('outline-width');
 
         const mockData = {
-            Name: 'Regiment',
+            Name: 'Division',
             Strength: 100
         };
 
