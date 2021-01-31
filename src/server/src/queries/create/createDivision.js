@@ -5,6 +5,8 @@ const createdivision = async (data, userId) => {
         name: data.name,
         pos_x: data.pos_x,
         pos_y: data.pos_y,
+        allegiance: data.allegiance,
+        specialty: data.specialty,
         stance: 'Neutral',
         range: 50,
         strength: 100,

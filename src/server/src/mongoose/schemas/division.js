@@ -6,6 +6,8 @@ const divisionSchema = new mongoose.Schema({
     name: String,
     pos_x: Number,
     pos_y: Number,
+    allegiance: String,
+    specialty: String,
     command: Number,
     stance: String,
     range: Number, // in pixels
