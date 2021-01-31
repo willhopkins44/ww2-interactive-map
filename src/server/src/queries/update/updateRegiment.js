@@ -2,12 +2,16 @@ const mongoose = require('mongoose');
 const getRegiment = require('../getRegiment');
 
 const checkRange = async (element, data) => {
-    const changeX = Math.abs(data.pos_x - data.dataToUpdate.pos_x);
-    const changeY = Math.abs(data.pos_y - data.dataToUpdate.pos_y);
-    if (changeX < element.range && changeY < element.range) {
-        return true;
+    if (!data.dataToUpdate.adminMove) {
+        const changeX = Math.abs(data.pos_x - data.dataToUpdate.pos_x);
+        const changeY = Math.abs(data.pos_y - data.dataToUpdate.pos_y);
+        if (changeX < element.range && changeY < element.range) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        return false;
+        return true;
     }
 }
 
