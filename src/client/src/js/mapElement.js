@@ -75,6 +75,25 @@ export class MapElement extends HTMLElement {
 
         informationBox.style.left = elementWidth;
         informationBox.style.top = `-${outlineWidth}`;
+        await this.initializeInformationData();
+    }
+
+    async initializeInformationData() {
+        const path = window.location.origin + '/get/steamId';
+        const playerId = await ajaxRequest(path);
+        if (this.command == playerId || this.admin) {
+            const informationBox = this.shadowRoot.querySelector('.information');
+            const remoteData = (await this.getData()).remoteData;
+            const type = this.getAttribute('type');
+            if (type == 'division') {
+                const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
+                for (let attribute of attributes) {
+                    const dataDiv = document.createElement('div');
+                    dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
+                    informationBox.appendChild(dataDiv);
+                }
+            }
+        }
     }
 
     async initializeContextMenu() {
@@ -225,20 +244,18 @@ export class MapElement extends HTMLElement {
 
     async displayInformationBox(e) {
         const informationBox = this.shadowRoot.querySelector('.information');
-        const path = window.location.origin + '/get/steamId';
-        const playerId = await ajaxRequest(path);
-        if ((this.positionLocked && this.command == playerId) || this.admin) {
+        if (this.positionLocked) {
             const displayInformationBox = setTimeout(async () => {
-                const remoteData = (await this.getData()).remoteData;
-                const type = this.getAttribute('type');
-                if (type == 'division') {
-                    const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
-                    for (let attribute of attributes) {
-                        const dataDiv = document.createElement('div');
-                        dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
-                        informationBox.appendChild(dataDiv);
-                    }
-                }
+                // const remoteData = (await this.getData()).remoteData;
+                // const type = this.getAttribute('type');
+                // if (type == 'division') {
+                //     const attributes = ['name', 'allegiance', 'stance', 'strength', 'organization', 'equipment', 'experience', 'range'];
+                //     for (let attribute of attributes) {
+                //         const dataDiv = document.createElement('div');
+                //         dataDiv.innerHTML = `${attribute.charAt(0).toUpperCase() + attribute.slice(1)}:&nbsp${remoteData[attribute]}`;
+                //         informationBox.appendChild(dataDiv);
+                //     }
+                // }
                 informationBox.classList.remove('hidden');
             }, 600);
 
@@ -353,6 +370,7 @@ export class MapElement extends HTMLElement {
                 this.adminMove = false;
             }
             confirmBox.remove();
+            this.initializeInformationData();
         }
 
         const cancel = () => {
